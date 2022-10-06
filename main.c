@@ -11,10 +11,14 @@
 #include <avr/io.h>
 #include "basic_defs.h"
 #include "USART.h"
+#include "oled.h"
 #include "adc_driver.h"
 #include "joystick.h"
+#include "fonts.h"
 #include <util/delay.h>
 #include <avr/interrupt.h>
+//#include <iostream>
+//using namespace std;
 
 
 
@@ -54,7 +58,27 @@ void SRAM_test(void)
 }
 
 
+void writing(char c)
+{
+	
+	for (uint8_t i = 0; i<8; i++)
+	{
+		oled_write_data(pgm_read_byte(&font8[c-32][i]));
+	}
+}
 
+void writing_oled(const char* data)
+{
+	//writing(&data);
+	//++data;
+	//writing(data);
+	int i = 0;
+	while(data[i] != '\0')
+	{
+		writing(data[i]);
+		++i;
+	}
+}
 
 int main()
 {
@@ -72,8 +96,29 @@ int main()
 	DDRB &= ~(1<<PB2);	
 	
 	adc_init();
-	
+	oled_init();
+	//oled_reset();
+		
 	printf("Starting...\n");
+
+
+	uint8_t oled_data = 0xFF;
+	uint8_t pos = 0x04;
+	
+	oled_pos(pos, 0x00);
+
+	/*
+	printf("Font: %02X \n",font4[1][1]);
+	printf("Font: %02X \n",font4[2][2]);
+	printf("Font: %02X \n",font4[1][2]);
+	printf("Font: %02X \n",pgm_read_word(&font8['c'-32][0]));
+	printf("Font: %02X \n",pgm_read_word(&font8['c'-32][1]));
+	printf("Font: %02X \n",pgm_read_word(&font8['c'-32][2]));
+	printf("Font: %02X \n",pgm_read_word(&font8['c'-32][3]));
+	*/
+	
+	char mystring[] = "WELP";
+	writing_oled(mystring);
 
 	while(1)
 	{
@@ -90,7 +135,7 @@ int main()
 		printf("Right Slider Value: %02X \n", d);
 		_delay_ms(1000);
 		//SRAM_test();
-		*/
+		
 		
 		pos_s = read_slider_pos();
 		pos_s = calibrate_slider_pos(pos_s);
@@ -107,8 +152,32 @@ int main()
 		left_button_press();
 		
 		_delay_ms(1000);
-	}
+		*/
+		
+		//display_on();
+		//oled_reset();
 
+
+		for (uint8_t page = 0; page <= 7; page++) {
+			oled_pos(page,0);
+			for (uint8_t col = 0; col <= 127; col++) {
+				//oled_pos(page, col);
+				oled_write_data(oled_data);
+				//oled_data += 1;
+				_delay_ms(100);
+			}
+			//_delay_ms(5000);
+		}
+
+	//writing('P');
+	//writing('M');
+	}
+	
+	//pos = 0x07;
+	
+	//oled_pos(pos, 0x00);
+	
+	
 return 0;
 }
 
@@ -117,8 +186,6 @@ void SRAM_INIT(void)
 	MCUCR |= (1<<SRE);
 	SFIOR |= (1<<XMM2);
 }
-
-
 
 /*
 
