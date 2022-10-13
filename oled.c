@@ -89,6 +89,11 @@ void oled_reset()
       oled_write_data(0x00);
     }
   }
+  oled_home();
+}
+
+void oled_home(){
+  oled_pos(0,0);
 }
 
 void oled_clear_line(uint8_t page)
