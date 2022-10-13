@@ -180,3 +180,7 @@ int left_button_press(){
 	}
 	return 0;
 }
+
+int joystick_button_press(){
+	return (PIND & (1<< PD4));
+}

@@ -64,6 +64,8 @@ void SRAM_INIT(void)
 }
 
 
+
+
 int main()
 {
 	volatile JOYSTICK_POS pos_j;
@@ -78,6 +80,8 @@ int main()
 	
 	DDRB &= ~(1<<PB1);
 	DDRB &= ~(1<<PB2);	
+	
+	DDRD &= ~(1<<PD4);
 	
 	adc_init();
 	oled_init();
@@ -105,27 +109,10 @@ int main()
 	printf("Font: %02X \n",pgm_read_word(&font8['c'-32][3]));
 	*/
 	
-	oled_pos(0x00, 0x00);
-	
-	char mystring[] = "OPTIONS         ";
-	writing_oled8(mystring);
 	
 	
-	oled_pos(0x01, 0x00);
-	char mystring1[] = "SETTINGS        ";
-	writing_oled8(mystring1);
 	
-	oled_pos(0x02, 0x00);
-	char mystring2[] = "SOUND           ";
-	writing_oled8(mystring2);
-	
-	oled_pos(0x03, 0x00);
-	char mystring3[] = "START          ";
-	writing_oled8(mystring3);
-	
-	oled_pos(0x04, 0x00);
-	char mystring4[] = "EXIT           ";
-	writing_oled8(mystring4);
+	uint8_t position = 0;
 
 	while(1)
 	{
@@ -163,7 +150,7 @@ int main()
 		_delay_ms(1000);
 		*/
 		
-		int position = 0;
+		
 		pos_j = read_joystick_pos();
 		pos_j = joystick_analog_pos(pos_j);
 		dir_j = input_joystick_dir(pos_j);
@@ -177,15 +164,51 @@ int main()
 		}
 		else if(dir_j == DOWN)
 		{
-			if(position > 0)
+			if(position < 7)
 			{
-				position = position - 1;
+				position = position + 1;
 			}
 		}
+		_delay_ms(600);
+		
+		
+		oled_reset();
+		
+		oled_pos(0x00, 0x00);
+		char mystring[] = "OPTIONS  ";
+		writing_oled8(mystring);
+		
+		oled_pos(0x01, 0x00);
+		char mystring1[] = "SETTINGS  ";
+		writing_oled8(mystring1);
+		
+		oled_pos(0x02, 0x00);
+		char mystring2[] = "SOUND   ";
+		writing_oled8(mystring2);
+		
+		oled_pos(0x03, 0x00);
+		char mystring3[] = "START   ";
+		writing_oled8(mystring3);
+		
+		oled_pos(0x04, 0x00);
+		char mystring4[] = "EXIT    ";
+		writing_oled8(mystring4);
+		
+		oled_pos(position, 0x00);
+		char mystring5[] = "<<-----";
+		writing_oled4(mystring5);
+		
+		//printf("Menu Position: %4d\n ", position);
 		
 		//display_on();
 		//oled_reset();
-
+		//int joy = 0;
+		int joy = joystick_button_press();
+		if (joy==0)
+		{
+			printf("Button is pressed!  %4d\n", joy);
+			printf("Menu Position: %4d\n ", position);
+		}
 /*
 		for (uint8_t page = 0; page <= 7; page++) {
 			oled_pos(page,0);

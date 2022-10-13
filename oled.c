@@ -56,7 +56,7 @@ void oled_go_to_line(uint8_t page)
     // oled_write_command(0x7F & (0x40 | line));
 	//page = 0xB0 + page;
     oled_write_command(0xB0 | (page & 0x07));
-	printf("Page Address: %02X \n", (0xB0 | (page & 0x07)));
+	//printf("Page Address: %02X \n", (0xB0 | (page & 0x07)));
 }
 
 void oled_go_to_col(uint8_t col)
@@ -89,11 +89,6 @@ void oled_reset()
       oled_write_data(0x00);
     }
   }
-  oled_home();
-}
-
-void oled_home(){
-  oled_pos(0,0);
 }
 
 void oled_clear_line(uint8_t page)

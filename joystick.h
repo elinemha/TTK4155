@@ -40,6 +40,7 @@ void print_slider_pos(SLIDER_POS pos);
 void print_joystick_dir(JOYSTICK_DIR dir);
 int	left_button_press();
 int right_button_press();
+int joystick_button_press();
 
 
 
