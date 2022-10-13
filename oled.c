@@ -1,10 +1,13 @@
 #include "oled.h"
+#include "fonts.h"
+
 
 
 void oled_write_command(uint8_t command)
 {
     volatile char* address = (char*) 0x1000;
     address[0] = command;
+	//uint8_t value = address[0];
 }
 
 
@@ -13,6 +16,7 @@ void oled_write_data(uint8_t data)
     volatile char* address = (char*) 0x1200;  // using A[9] to indicate the command/data mode, since address is auto-incremented
     address[0] = data;
 	//printf("Data Written: %02X \n", data);
+	//uint8_t value = address[0];
 }
 
 void oled_init()
@@ -44,7 +48,7 @@ void oled_init()
 
 void display_on()
 {
-	oled_write_command(0xA5);
+	oled_write_command(0xA5); //
 }
 
 void oled_go_to_line(uint8_t page)
@@ -94,4 +98,71 @@ void oled_clear_line(uint8_t page)
   {
       oled_write_data(0x00);
   }
+}
+
+
+void writing5(char c)
+{
+	
+	for (uint8_t i = 0; i<5; i++)
+	{
+		oled_write_data(pgm_read_byte(&font5[c-32][i]));
+	}
+}
+
+void writing4(char c)
+{
+	
+	for (uint8_t i = 0; i<4; i++)
+	{
+		oled_write_data(pgm_read_byte(&font4[c-32][i]));
+	}
+}
+
+void writing8(char c)
+{
+	
+	for (uint8_t i = 0; i<8; i++)
+	{
+		oled_write_data(pgm_read_byte(&font8[c-32][i]));
+	}
+}
+
+void writing_oled4(const char* data)
+{
+	//writing(&data);
+	//++data;
+	//writing(data);
+	int i = 0;
+	while(data[i] != '\0')
+	{
+		writing4(data[i]);
+		++i;
+	}
+}
+
+void writing_oled5(const char* data)
+{
+	//writing(&data);
+	//++data;
+	//writing(data);
+	int i = 0;
+	while(data[i] != '\0')
+	{
+		writing5(data[i]);
+		++i;
+	}
+}
+
+void writing_oled8(const char* data)
+{
+	//writing(&data);
+	//++data;
+	//writing(data);
+	int i = 0;
+	while(data[i] != '\0')
+	{
+		writing8(data[i]);
+		++i;
+	}
 }

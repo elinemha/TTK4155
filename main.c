@@ -14,7 +14,7 @@
 #include "oled.h"
 #include "adc_driver.h"
 #include "joystick.h"
-#include "fonts.h"
+//#include "fonts.h"
 #include <util/delay.h>
 #include <avr/interrupt.h>
 //#include <iostream>
@@ -57,28 +57,12 @@ void SRAM_test(void)
 	printf("SRAM test completed with \n%4d errors in write phase and \n%4d errors in retrieval phase\n\n", write_errors, retrieval_errors);
 }
 
-
-void writing(char c)
+void SRAM_INIT(void)
 {
-	
-	for (uint8_t i = 0; i<8; i++)
-	{
-		oled_write_data(pgm_read_byte(&font8[c-32][i]));
-	}
+	MCUCR |= (1<<SRE);
+	SFIOR |= (1<<XMM2);
 }
 
-void writing_oled(const char* data)
-{
-	//writing(&data);
-	//++data;
-	//writing(data);
-	int i = 0;
-	while(data[i] != '\0')
-	{
-		writing(data[i]);
-		++i;
-	}
-}
 
 int main()
 {
@@ -97,6 +81,10 @@ int main()
 	
 	adc_init();
 	oled_init();
+	oled_reset();
+	//_delay_ms(1000);
+	//display_on();
+	//_delay_ms(1000);
 	//oled_reset();
 		
 	printf("Starting...\n");
@@ -105,7 +93,7 @@ int main()
 	uint8_t oled_data = 0xFF;
 	uint8_t pos = 0x04;
 	
-	oled_pos(pos, 0x00);
+	
 
 	/*
 	printf("Font: %02X \n",font4[1][1]);
@@ -117,11 +105,32 @@ int main()
 	printf("Font: %02X \n",pgm_read_word(&font8['c'-32][3]));
 	*/
 	
-	char mystring[] = "WELP";
-	writing_oled(mystring);
+	oled_pos(0x00, 0x00);
+	
+	char mystring[] = "OPTIONS         ";
+	writing_oled8(mystring);
+	
+	
+	oled_pos(0x01, 0x00);
+	char mystring1[] = "SETTINGS        ";
+	writing_oled8(mystring1);
+	
+	oled_pos(0x02, 0x00);
+	char mystring2[] = "SOUND           ";
+	writing_oled8(mystring2);
+	
+	oled_pos(0x03, 0x00);
+	char mystring3[] = "START          ";
+	writing_oled8(mystring3);
+	
+	oled_pos(0x04, 0x00);
+	char mystring4[] = "EXIT           ";
+	writing_oled8(mystring4);
 
 	while(1)
 	{
+			//writing_oled(mystring);
+
 		/*
 		volatile uint8_t a = adc_read(0);
 		volatile uint8_t b = adc_read(1);
@@ -154,10 +163,30 @@ int main()
 		_delay_ms(1000);
 		*/
 		
+		int position = 0;
+		pos_j = read_joystick_pos();
+		pos_j = joystick_analog_pos(pos_j);
+		dir_j = input_joystick_dir(pos_j);
+		
+		if(dir_j == UP)
+		{
+			if(position > 0)
+			{
+				position = position - 1;
+			}
+		}
+		else if(dir_j == DOWN)
+		{
+			if(position > 0)
+			{
+				position = position - 1;
+			}
+		}
+		
 		//display_on();
 		//oled_reset();
 
-
+/*
 		for (uint8_t page = 0; page <= 7; page++) {
 			oled_pos(page,0);
 			for (uint8_t col = 0; col <= 127; col++) {
@@ -167,7 +196,7 @@ int main()
 				_delay_ms(100);
 			}
 			//_delay_ms(5000);
-		}
+		}*/
 
 	//writing('P');
 	//writing('M');
@@ -181,11 +210,6 @@ int main()
 return 0;
 }
 
-void SRAM_INIT(void)
-{
-	MCUCR |= (1<<SRE);
-	SFIOR |= (1<<XMM2);
-}
 
 /*
 
