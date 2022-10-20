@@ -14,6 +14,8 @@
 #include "oled.h"
 #include "adc_driver.h"
 #include "joystick.h"
+#include "mcp2515.h"
+#include "spi_driver.h"
 //#include "fonts.h"
 #include <util/delay.h>
 #include <avr/interrupt.h>
@@ -84,40 +86,75 @@ int main()
 	DDRD &= ~(1<<PD4);
 	
 	adc_init();
-	oled_init();
-	oled_reset();
+	//oled_init();
+	//oled_reset();
 	//_delay_ms(1000);
 	//display_on();
 	//_delay_ms(1000);
 	//oled_reset();
+	
+	mcp_init();
+	SPI_Init();
 		
 	printf("Starting...\n");
-
-
-	uint8_t oled_data = 0xFF;
-	uint8_t pos = 0x04;
+	
+	uint8_t address_spi = 0x05;
+	uint8_t data_spi;
 	
 	
-
+	
+	//uint8_t oled_data = 0xFF;
+	//uint8_t pos = 0x04;
 	/*
-	printf("Font: %02X \n",font4[1][1]);
-	printf("Font: %02X \n",font4[2][2]);
-	printf("Font: %02X \n",font4[1][2]);
-	printf("Font: %02X \n",pgm_read_word(&font8['c'-32][0]));
-	printf("Font: %02X \n",pgm_read_word(&font8['c'-32][1]));
-	printf("Font: %02X \n",pgm_read_word(&font8['c'-32][2]));
-	printf("Font: %02X \n",pgm_read_word(&font8['c'-32][3]));
-	*/
-	
-	
-	
-	
-	uint8_t position = 0;
-
-	while(1)
+	for (uint8_t i=0; i<10; i++)
 	{
+		mcp_write_tx0_buffer(i);
+	}
+	
+	for (uint8_t i=0; i<10; i++)
+	{
+		data_spi = mcp_read_rx0_buffer();	
+		printf("Trial and error: %02X \n", data_spi);
+	}
+	*/
+	PORTB &= ~(1 << CAN_CS );
+	
+	while(1)
+	{	
+		
+		//mcp2515_write(MCP_CNF1, 0x04 );
+		//data_spi = mcp2515_read(MCP_CNF1);
+		//printf("Trial and error  %02X \n", data_spi);	
+		SPI_write(0xAA);
+		data_spi = SPI_read();	
+		//printf("SPI0  %02X \n", data_spi);
+		_delay_ms(1000);
+		SPI_write(0xA0);
+		data_spi = SPI_read();
+		//printf("SPI0  %02X \n", data_spi);
+		_delay_ms(1000);
+		SPI_write(0xA2);
+		data_spi = SPI_read();
+		//printf("SPI0  %02X \n", data_spi);
+		_delay_ms(1000);
+		SPI_write(0xA4);
+		data_spi = SPI_read();
+		//printf("SPI0  %02X \n", data_spi);
+		_delay_ms(1000);
+
+/*
+		mcp_write_tx0_buffer(0x0F);
+		data_spi = mcp_read_rx0_buffer();
+		
+		printf("Trial and error: %02X \n", data_spi);
+		_delay_ms(100);
+		*/
 			//writing_oled(mystring);
 
+		//////////////////////////////////
+		///////// JOYSTICK ///////////////
+		//////////////////////////////////
+		
 		/*
 		volatile uint8_t a = adc_read(0);
 		volatile uint8_t b = adc_read(1);
@@ -151,6 +188,10 @@ int main()
 		*/
 		
 		
+		/////////////////////////////////
+		////////////// OLED /////////////
+		/////////////////////////////////
+		/*
 		pos_j = read_joystick_pos();
 		pos_j = joystick_analog_pos(pos_j);
 		dir_j = input_joystick_dir(pos_j);
@@ -169,7 +210,7 @@ int main()
 				position = position + 1;
 			}
 		}
-		_delay_ms(600);
+		_delay_ms(300);
 		
 		
 		oled_reset();
@@ -209,6 +250,8 @@ int main()
 			printf("Button is pressed!  %4d\n", joy);
 			printf("Menu Position: %4d\n ", position);
 		}
+		*/
+		
 /*
 		for (uint8_t page = 0; page <= 7; page++) {
 			oled_pos(page,0);
@@ -223,12 +266,7 @@ int main()
 
 	//writing('P');
 	//writing('M');
-	}
-	
-	//pos = 0x07;
-	
-	//oled_pos(pos, 0x00);
-	
+	}	
 	
 return 0;
 }
