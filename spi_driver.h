@@ -13,7 +13,7 @@
 
 void SPI_Init(void);
 void SPI_write(uint8_t cData);
-char SPI_read();
+uint8_t SPI_read();
 void SPI_SlaveInit(void);
 char SPI_SlaveReceive(void);
 

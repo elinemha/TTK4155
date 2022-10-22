@@ -21,21 +21,21 @@ uint8_t mcp_init()
 uint8_t mcp2515_read(uint8_t address)
 {
 	uint8_t result ;
-	PORTB &= ~(1 << CAN_CS ); // Select CAN - controller
+	PORTB &= ~(1 << DDB4 ); // Select CAN - controller
 	SPI_write( MCP_READ ); // Send read instruction
 	SPI_write( address ); // Send address
 	result = SPI_read () ; // Read result
-	PORTB |= (1 << CAN_CS ); // Deselect CAN - controller
+	PORTB |= (1 << DDB4 ); // Deselect CAN - controller
 	return result ;
 }
 
 void mcp2515_write(uint8_t address, uint8_t data)
 {
-	PORTB &= ~(1 << CAN_CS ); // Select CAN - controller
+	PORTB &= ~(1 << DDB4 ); // Select CAN - controller
 	SPI_write( MCP_WRITE ); // Send read instruction
 	SPI_write( address ); // Send address
 	SPI_write( data ); // Send data
-	PORTB |= (1 << CAN_CS ); // Deselect CAN - controller
+	PORTB |= (1 << DDB4 ); // Deselect CAN - controller
 }
 
 void mcp2515_request_to_send(uint8_t buffer)
@@ -58,9 +58,9 @@ void mcp2515_bit_modify(uint8_t address, uint8_t mask, uint8_t data)
 
 void mcp2515_reset()
 {
-	PORTB &= ~(1 << CAN_CS );
+	PORTB &= ~(1 << DDB4 );
 	SPI_write(MCP_RESET);
-	PORTB |= (1 << CAN_CS );
+	PORTB |= (1 << DDB4 );
 	_delay_ms(10);
 		
 }
@@ -77,17 +77,17 @@ uint8_t mcp2515_read_status()
 uint8_t mcp_read_rx0_buffer()
 {
 	uint8_t result ;
-	PORTB &= ~(1 << CAN_CS );
+	PORTB &= ~(1 << DDB4 );
 	SPI_write(MCP_READ_RX1);
 	result = SPI_read () ; // Read result
-	PORTB |= (1 << CAN_CS );
+	PORTB |= (1 << DDB4 );
 	return result;
 }
 
 void mcp_write_tx0_buffer(uint8_t data)
 {
-	PORTB &= ~(1 << CAN_CS );
+	PORTB &= ~(1 << DDB4 );
 	SPI_write(MCP_LOAD_TX1);
 	SPI_write(data); // Send data
-	PORTB |= (1 << CAN_CS );
+	PORTB |= (1 << DDB4 );
 }

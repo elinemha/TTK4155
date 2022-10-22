@@ -93,13 +93,24 @@ int main()
 	//_delay_ms(1000);
 	//oled_reset();
 	
-	mcp_init();
+	//mcp_init();
 	SPI_Init();
 		
 	printf("Starting...\n");
 	
 	uint8_t address_spi = 0x05;
 	uint8_t data_spi;
+	
+	PORTB &= ~(1 << DDB4 );
+	SPI_write(MCP_RESET);
+	PORTB |= (1 << DDB4 );
+	_delay_ms(50);
+	
+	PORTB &= ~(1 << DDB4 ); // Select CAN - controller
+	SPI_write( MCP_WRITE ); // Send read instruction
+	SPI_write( MCP_CANCTRL ); // Send address
+	SPI_write( MODE_LOOPBACK ); // Send data
+	PORTB |= (1 << DDB4 ); // Deselect CAN - controller
 	
 	
 	
@@ -117,31 +128,103 @@ int main()
 		printf("Trial and error: %02X \n", data_spi);
 	}
 	*/
-	PORTB &= ~(1 << CAN_CS );
+	//PORTB &= ~(1 << PB4 );
 	
 	while(1)
-	{	
+	{	/*
+		SPI_Init();
+		
+		PORTB &= ~(1 << DDB4 );
+		SPI_write(MCP_RESET);
+		PORTB |= (1 << DDB4 );
+		_delay_ms(1000);
+		
+		PORTB &= ~(1 << DDB4 ); // Select CAN - controller
+		SPI_write( MCP_WRITE ); // Send read instruction
+		SPI_write( MCP_CANCTRL ); // Send address
+		SPI_write( MODE_LOOPBACK ); // Send data
+		PORTB |= (1 << DDB4 ); // Deselect CAN - controller
+		_delay_ms(1000);
+		
+		PORTB &= ~(1 << DDB4 ); // Select CAN - controller
+		SPI_write( MCP_READ ); // Send read instruction
+		SPI_write( MCP_CANSTAT ); // Send address
+		data_spi = SPI_read () ; // Read result
+		PORTB |= (1 << DDB4 ); // Deselect CAN - controller
+		printf("SPI0  %02X \n", data_spi);
+		_delay_ms(4000);
+		
+		for (uint8_t i=1; i<10; i++)
+		{
+			mcp_write_tx0_buffer(i);
+		}
+		
+		for (uint8_t i=1; i<10; i++)
+		{
+			data_spi = mcp_read_rx0_buffer();
+			printf("Trial and error: %02X \n", data_spi);
+		}
+		*/
+	PORTB &= ~(1 << DDB4 ); // Select CAN - controller
+	SPI_write( MCP_READ ); // Send read instruction
+	SPI_write( MCP_CANSTAT ); // Send address
+		data_spi = SPI_read () ;
+		PORTB |= (1 << DDB4 ); 
+		_delay_us(100);
+		
+		//PORTB &= ~(1 << DDB4 );
+		//SPI_write(0xAA);
+		
+		/*
+		PORTB &= ~(1 << DDB4 );
 		
 		//mcp2515_write(MCP_CNF1, 0x04 );
 		//data_spi = mcp2515_read(MCP_CNF1);
 		//printf("Trial and error  %02X \n", data_spi);	
-		SPI_write(0xAA);
+		SPI_write(0xFF);
 		data_spi = SPI_read();	
-		//printf("SPI0  %02X \n", data_spi);
+		printf("SPI0  %02X \n", data_spi);
 		_delay_ms(1000);
-		SPI_write(0xA0);
+		SPI_write(0xFF);
 		data_spi = SPI_read();
-		//printf("SPI0  %02X \n", data_spi);
+		printf("SPI0  %02X \n", data_spi);
 		_delay_ms(1000);
-		SPI_write(0xA2);
+		SPI_write(0xFF);
 		data_spi = SPI_read();
-		//printf("SPI0  %02X \n", data_spi);
+		printf("SPI0  %02X \n", data_spi);
 		_delay_ms(1000);
-		SPI_write(0xA4);
+		SPI_write(0xFF);
 		data_spi = SPI_read();
-		//printf("SPI0  %02X \n", data_spi);
+		printf("SPI0  %02X \n", data_spi);
 		_delay_ms(1000);
-
+		
+		PORTB |= (1 << DDB4 );
+		_delay_ms(5000);
+		PORTB &= ~(1 << DDB4 );
+		
+		//mcp2515_write(MCP_CNF1, 0x04 );
+		//data_spi = mcp2515_read(MCP_CNF1);
+		//printf("Trial and error  %02X \n", data_spi);
+		SPI_write(0x00);
+		data_spi = SPI_read();
+		printf("SPI0  %02X \n", data_spi);
+		_delay_ms(1000);
+		SPI_write(0x00);
+		data_spi = SPI_read();
+		printf("SPI0  %02X \n", data_spi);
+		_delay_ms(1000);
+		SPI_write(0x00);
+		data_spi = SPI_read();
+		printf("SPI0  %02X \n", data_spi);
+		_delay_ms(1000);
+		SPI_write(0x00);
+		data_spi = SPI_read();
+		printf("SPI0  %02X \n", data_spi);
+		_delay_ms(1000);
+		
+		PORTB |= (1 << DDB4 );
+		_delay_ms(5000);*/
+		
 /*
 		mcp_write_tx0_buffer(0x0F);
 		data_spi = mcp_read_rx0_buffer();
