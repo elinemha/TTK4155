@@ -8,17 +8,16 @@ void SPI_Init(void)
 	/* Enable SPI, Master, set clock rate fck/16 */
 	SPCR = (1<<SPE)|(1<<MSTR)|(1<<SPR0);
 	//printf("SPCR: %02X \n", SPCR);
+	PORTB |= (1<<PB4);
 }
-void SPI_write(uint8_t cData)
+void SPI_write(char cData)
 {
 	/* Start transmission */
 	SPDR = cData;
 	//printf("SPI Write: %02X \n", SPDR);
 	//printf("SPI Write 2: %02X \n", cData);
 	/* Wait for transmission complete */
-	while(!(SPSR & (1<<SPIF))){
-		
-	}
+	while(!(SPSR & (1<<SPIF)));
 }
 
 uint8_t SPI_read(void)
@@ -26,9 +25,8 @@ uint8_t SPI_read(void)
 	/* Start transmission */
 	//SPDR = cData;
 	/* Wait for transmission complete */
-	while(!(SPSR & (1<<SPIF))){
-		
-	}
+	SPI_write(0);
+	//while(!(SPSR & (1<<SPIF)));
 	//printf("SPI Read: %02X \n", SPDR);
 	return SPDR;
 }

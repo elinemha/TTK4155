@@ -2,40 +2,42 @@
 #include "mcp2515.h"
 #include "spi_driver.h"
 
+#define can_cpu 16000000
+#define number_tq 16
+#define baudrate 250000
 
-uint8_t mcp_init()
+void mcp_init()
 {
 	uint8_t value ;
 	SPI_Init();
 	mcp2515_reset();
-	mcp2515_write(MCP_CANCTRL, MODE_LOOPBACK);
+	//mcp2515_write(MCP_CANCTRL, MODE_LOOPBACK);
 	value = mcp2515_read( MCP_CANSTAT);
 	printf("%x \n", value);
-	if (( value & MODE_MASK ) != MODE_LOOPBACK ) {
+	if (( value & MODE_MASK ) != MODE_CONFIG ) {
 		printf (" MCP2515 is NOT in configs mode after reset !\n");
-		return 1;
 	}
-	return 0;
+	uint8_t BRP = can_cpu / (2* number_tq * baudrate);
 }
 
 uint8_t mcp2515_read(uint8_t address)
 {
 	uint8_t result ;
-	PORTB &= ~(1 << DDB4 ); // Select CAN - controller
+	PORTB &= ~(1 << PB4 ); // Select CAN - controller
 	SPI_write( MCP_READ ); // Send read instruction
 	SPI_write( address ); // Send address
 	result = SPI_read () ; // Read result
-	PORTB |= (1 << DDB4 ); // Deselect CAN - controller
+	PORTB |= (1 << PB4 ); // Deselect CAN - controller
 	return result ;
 }
 
 void mcp2515_write(uint8_t address, uint8_t data)
 {
-	PORTB &= ~(1 << DDB4 ); // Select CAN - controller
+	PORTB &= ~(1 << PB4 ); // Select CAN - controller
 	SPI_write( MCP_WRITE ); // Send read instruction
 	SPI_write( address ); // Send address
 	SPI_write( data ); // Send data
-	PORTB |= (1 << DDB4 ); // Deselect CAN - controller
+	PORTB |= (1 << PB4 ); // Deselect CAN - controller
 }
 
 void mcp2515_request_to_send(uint8_t buffer)
@@ -58,9 +60,9 @@ void mcp2515_bit_modify(uint8_t address, uint8_t mask, uint8_t data)
 
 void mcp2515_reset()
 {
-	PORTB &= ~(1 << DDB4 );
+	PORTB &= ~(1 << PB4 );
 	SPI_write(MCP_RESET);
-	PORTB |= (1 << DDB4 );
+	PORTB |= (1 << PB4 );
 	_delay_ms(10);
 		
 }
@@ -74,20 +76,29 @@ uint8_t mcp2515_read_status()
 	return status;
 }
 
+uint8_t mcp2515_rx_status()
+{
+	PORTB &= ~(1 << CAN_CS );
+	SPI_write(MCP_RX_STATUS);
+	uint8_t status = SPI_read();
+	PORTB |= (1 << CAN_CS );
+	return status;
+}
+
 uint8_t mcp_read_rx0_buffer()
 {
 	uint8_t result ;
-	PORTB &= ~(1 << DDB4 );
-	SPI_write(MCP_READ_RX1);
+	PORTB &= ~(1 << PB4 );
+	SPI_write(MCP_READ_RX0);
 	result = SPI_read () ; // Read result
-	PORTB |= (1 << DDB4 );
+	PORTB |= (1 << PB4 );
 	return result;
 }
 
 void mcp_write_tx0_buffer(uint8_t data)
 {
-	PORTB &= ~(1 << DDB4 );
-	SPI_write(MCP_LOAD_TX1);
+	PORTB &= ~(1 << PB4 );
+	SPI_write(MCP_LOAD_TX0);
 	SPI_write(data); // Send data
-	PORTB |= (1 << DDB4 );
+	PORTB |= (1 << PB4 );
 }

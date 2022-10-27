@@ -156,7 +156,28 @@ Copyright 2003 Kimberly Otten Software Consulting
 #define MCP_WAKIF		0x40
 #define MCP_MERRF		0x80
 
-#define CAN_CS DDB4
+//Group defined
+
+#define TXB0SIDH	0x31
+#define TXB1SIDH	0x41
+#define TXB2SIDH	0x51
+
+#define TXB0SIDL	0x32
+#define TXB1SIDL	0x42
+#define TXB2SIDL	0x52
+
+#define TXB0DLC			0x35
+#define TXB1DLC			0x45
+#define TXB2DLC			0x55
+
+#define TXB0D0			0x36
+
+#define MCP_RXB0SIDL	0x62
+#define MCP_RXB0DLC		0x65
+#define MCP_RXB0D0		0x66
+
+
+#define CAN_CS PB4
 
 uint8_t mcp2515_read(uint8_t address);
 void mcp2515_write(uint8_t address, uint8_t data);
@@ -164,9 +185,11 @@ void mcp2515_request_to_send(uint8_t buffer);
 void mcp2515_bit_modify(uint8_t address, uint8_t mask, uint8_t data);
 void mcp2515_reset();
 uint8_t mcp2515_read_status();
-uint8_t mcp_init();
+void mcp_init();
 uint8_t mcp_read_rx0_buffer();
 void mcp_write_tx0_buffer(uint8_t data);
+uint8_t mcp2515_rx_status();
+
 
 
 #endif

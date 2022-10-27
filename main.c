@@ -16,6 +16,7 @@
 #include "joystick.h"
 #include "mcp2515.h"
 #include "spi_driver.h"
+#include "can.h"
 //#include "fonts.h"
 #include <util/delay.h>
 #include <avr/interrupt.h>
@@ -93,45 +94,106 @@ int main()
 	//_delay_ms(1000);
 	//oled_reset();
 	
-	//mcp_init();
-	SPI_Init();
+	mcp_init();
+	//SPI_Init();
+	mcp2515_write(MCP_CANCTRL, MODE_LOOPBACK);
+	
 		
 	printf("Starting...\n");
 	
 	uint8_t address_spi = 0x05;
 	uint8_t data_spi;
+	uint8_t status;
+	
+	can_message cm;
+	cm.id = 255;
+	cm.length = 2;
+	cm.data[0] = 'a';
+	cm.data[1] = 'b';
+	
+	canned(&cm);
+	_delay_ms(1);
+	can_rec(&cm);
+	_delay_ms(1);
+	print_can(&cm);
+
+	/*
+
+	
+	//status = mcp2515_read_status();
+	//printf("Status: %x \n", status);
+	
+	
+	//mcp2515_bit_modify(MCP_CANCTRL, MODE_MASK, MODE_LOOPBACK);
+	mcp2515_write(MCP_CANCTRL, MODE_LOOPBACK);
+	
+	uint8_t value = mcp2515_read( MCP_CANSTAT);
+	printf("%x \n", value);
+	if (( value & MODE_MASK ) != MODE_LOOPBACK ) {
+		printf (" MCP2515 is NOT in loopback mode  !\n");
+	}
+	else{
+		printf (" MCP2515 is in loopback mode   !\n");
+	}
+	
+	mcp2515_request_to_send(MCP_RTS_TX0);
+	
+	status = mcp2515_read_status();
+	printf("Status: %x \n", status);
+	
+	//can_message cm;
+	//cm.id = 2;
+	//cm.length = '6';
+	//cm.data = 'abcdef';
+	
+	//mcp2515_write(MCP_TXB1CTRL, 0x00);
+	
+	value = mcp2515_read(MCP_TX0IF);
+	printf("TXF: %x \n", value);
+	
+	mcp_write_tx0_buffer(0x75);
+	
+	value = mcp2515_read(MCP_TX0IF);
+	printf("TXF: %x \n", value);
+	value = mcp2515_read(MCP_RX0IF);
+	printf("RXF: %x \n", value);
+	
+	data_spi = mcp_read_rx0_buffer();
+	printf("MCP Data: %x \n", data_spi);
+	
+	value = mcp2515_read(MCP_RX0IF);
+	printf("RXF: %x \n", value);
+	
+	status = mcp2515_read_status();
+	printf("Status: %x \n", status);
+	
+	//mcp2515_write(MCP_TXB1CTRL, 0x00);
+	
 	
 	PORTB &= ~(1 << DDB4 );
 	SPI_write(MCP_RESET);
 	PORTB |= (1 << DDB4 );
 	_delay_ms(50);
 	
+	PORTB &= ~(1 << DDB4 );
+	SPI_write( MCP_WRITE ); // Send read instruction
+	SPI_write( MCP_CANCTRL ); // Send address
+	SPI_write(MODE_CONFIG);
+	PORTB |= (1 << DDB4 );
+	_delay_ms(50);
+	
 	PORTB &= ~(1 << DDB4 ); // Select CAN - controller
 	SPI_write( MCP_WRITE ); // Send read instruction
 	SPI_write( MCP_CANCTRL ); // Send address
-	SPI_write( MODE_LOOPBACK ); // Send data
+	SPI_write( MODE_NORMAL ); // Send data
 	PORTB |= (1 << DDB4 ); // Deselect CAN - controller
-	
-	
-	
-	//uint8_t oled_data = 0xFF;
-	//uint8_t pos = 0x04;
-	/*
-	for (uint8_t i=0; i<10; i++)
-	{
-		mcp_write_tx0_buffer(i);
-	}
-	
-	for (uint8_t i=0; i<10; i++)
-	{
-		data_spi = mcp_read_rx0_buffer();	
-		printf("Trial and error: %02X \n", data_spi);
-	}
 	*/
-	//PORTB &= ~(1 << PB4 );
-	
 	while(1)
-	{	/*
+	{	
+
+		/*
+		
+
 		SPI_Init();
 		
 		PORTB &= ~(1 << DDB4 );
@@ -165,74 +227,20 @@ int main()
 			printf("Trial and error: %02X \n", data_spi);
 		}
 		*/
-	PORTB &= ~(1 << DDB4 ); // Select CAN - controller
-	SPI_write( MCP_READ ); // Send read instruction
-	SPI_write( MCP_CANSTAT ); // Send address
-		data_spi = SPI_read () ;
-		PORTB |= (1 << DDB4 ); 
+		//PORTB &= ~(1 << DDB4 ); // Select CAN - controller
+		//SPI_write( MCP_READ ); // Send read instruction
+		//SPI_write( MCP_CANSTAT ); // Send address
+		//data_spi = SPI_read () ;
+		//PORTB |= (1 << DDB4 ); 
+		//_delay_us(100);
+	/*	
+		PORTB &= ~(1 << PB4 );
+		SPI_write(0xAA);
+		SPI_write(0xAA);
+		PORTB |= (1 << PB4 );
 		_delay_us(100);
 		
-		//PORTB &= ~(1 << DDB4 );
-		//SPI_write(0xAA);
-		
-		/*
-		PORTB &= ~(1 << DDB4 );
-		
-		//mcp2515_write(MCP_CNF1, 0x04 );
-		//data_spi = mcp2515_read(MCP_CNF1);
-		//printf("Trial and error  %02X \n", data_spi);	
-		SPI_write(0xFF);
-		data_spi = SPI_read();	
-		printf("SPI0  %02X \n", data_spi);
-		_delay_ms(1000);
-		SPI_write(0xFF);
-		data_spi = SPI_read();
-		printf("SPI0  %02X \n", data_spi);
-		_delay_ms(1000);
-		SPI_write(0xFF);
-		data_spi = SPI_read();
-		printf("SPI0  %02X \n", data_spi);
-		_delay_ms(1000);
-		SPI_write(0xFF);
-		data_spi = SPI_read();
-		printf("SPI0  %02X \n", data_spi);
-		_delay_ms(1000);
-		
-		PORTB |= (1 << DDB4 );
-		_delay_ms(5000);
-		PORTB &= ~(1 << DDB4 );
-		
-		//mcp2515_write(MCP_CNF1, 0x04 );
-		//data_spi = mcp2515_read(MCP_CNF1);
-		//printf("Trial and error  %02X \n", data_spi);
-		SPI_write(0x00);
-		data_spi = SPI_read();
-		printf("SPI0  %02X \n", data_spi);
-		_delay_ms(1000);
-		SPI_write(0x00);
-		data_spi = SPI_read();
-		printf("SPI0  %02X \n", data_spi);
-		_delay_ms(1000);
-		SPI_write(0x00);
-		data_spi = SPI_read();
-		printf("SPI0  %02X \n", data_spi);
-		_delay_ms(1000);
-		SPI_write(0x00);
-		data_spi = SPI_read();
-		printf("SPI0  %02X \n", data_spi);
-		_delay_ms(1000);
-		
-		PORTB |= (1 << DDB4 );
-		_delay_ms(5000);*/
-		
-/*
-		mcp_write_tx0_buffer(0x0F);
-		data_spi = mcp_read_rx0_buffer();
-		
-		printf("Trial and error: %02X \n", data_spi);
-		_delay_ms(100);
-		*/
-			//writing_oled(mystring);
+	*/
 
 		//////////////////////////////////
 		///////// JOYSTICK ///////////////
@@ -372,3 +380,78 @@ return 0;
 //ADC_clock();
 //printf("Ending Clock\n");
 */
+
+//uint8_t oled_data = 0xFF;
+	//uint8_t pos = 0x04;
+	/*
+	for (uint8_t i=0; i<10; i++)
+	{
+		mcp_write_tx0_buffer(i);
+	}
+	
+	for (uint8_t i=0; i<10; i++)
+	{
+		data_spi = mcp_read_rx0_buffer();	
+		printf("Trial and error: %02X \n", data_spi);
+	}
+	*/
+	//PORTB &= ~(1 << PB4 );
+	
+		/*
+		PORTB &= ~(1 << DDB4 );
+		
+		//mcp2515_write(MCP_CNF1, 0x04 );
+		//data_spi = mcp2515_read(MCP_CNF1);
+		//printf("Trial and error  %02X \n", data_spi);	
+		SPI_write(0xFF);
+		data_spi = SPI_read();	
+		printf("SPI0  %02X \n", data_spi);
+		_delay_ms(1000);
+		SPI_write(0xFF);
+		data_spi = SPI_read();
+		printf("SPI0  %02X \n", data_spi);
+		_delay_ms(1000);
+		SPI_write(0xFF);
+		data_spi = SPI_read();
+		printf("SPI0  %02X \n", data_spi);
+		_delay_ms(1000);
+		SPI_write(0xFF);
+		data_spi = SPI_read();
+		printf("SPI0  %02X \n", data_spi);
+		_delay_ms(1000);
+		
+		PORTB |= (1 << DDB4 );
+		_delay_ms(5000);
+		PORTB &= ~(1 << DDB4 );
+		
+		//mcp2515_write(MCP_CNF1, 0x04 );
+		//data_spi = mcp2515_read(MCP_CNF1);
+		//printf("Trial and error  %02X \n", data_spi);
+		SPI_write(0x00);
+		data_spi = SPI_read();
+		printf("SPI0  %02X \n", data_spi);
+		_delay_ms(1000);
+		SPI_write(0x00);
+		data_spi = SPI_read();
+		printf("SPI0  %02X \n", data_spi);
+		_delay_ms(1000);
+		SPI_write(0x00);
+		data_spi = SPI_read();
+		printf("SPI0  %02X \n", data_spi);
+		_delay_ms(1000);
+		SPI_write(0x00);
+		data_spi = SPI_read();
+		printf("SPI0  %02X \n", data_spi);
+		_delay_ms(1000);
+		
+		PORTB |= (1 << DDB4 );
+		_delay_ms(5000);*/
+		
+/*
+		mcp_write_tx0_buffer(0x0F);
+		data_spi = mcp_read_rx0_buffer();
+		
+		printf("Trial and error: %02X \n", data_spi);
+		_delay_ms(100);
+		*/
+			//writing_oled(mystring);
