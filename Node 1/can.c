@@ -30,8 +30,8 @@ void canned(can_message* cm)
 	//Data: TXBnDm
 	//+ RTS (TXBnCTRL.TXREQ)
 	
-	mcp2515_write(TXB0SIDH, cm->id);
-	//mcp2515_write(TXB0SIDL, cm->id<<5);
+	mcp2515_write(TXB0SIDH, cm->id>>3);
+	mcp2515_write(TXB0SIDL, cm->id<<5);
 	mcp2515_write(TXB0DLC, cm->length);
 	
 	for(int i=0; i<cm->length; i++){
@@ -43,21 +43,22 @@ void canned(can_message* cm)
 }
 
 void can_rec(can_message* cm){
-	cm->id = mcp2515_read(MCP_RXB0SIDH);//<<3 +  mcp2515_read(MCP_RXB0SIDL)>>5;
+	
+	//uint8_t var1 =  mcp2515_read(MCP_RXB0SIDH)>>3;
+	//uint8_t var2 =  mcp2515_read(MCP_RXB0SIDL)>>5;
+	cm->id = (mcp2515_read(MCP_RXB0SIDH)<<3) | (mcp2515_read(MCP_RXB0SIDL)>>5);
+//	cm->id = mcp2515_read(MCP_RXB0SIDH);
 	cm->length = mcp2515_read(MCP_RXB0DLC);
 	for (int i = 0; i<cm->length; i++)
 	{
-		cm->data[i] = mcp2515_read(MCP_RXB0D0+i);
+		cm->data[i] = mcp2515_read(MCP_RXB0D0 + i);
 	}
-	
+	mcp2515_bit_modify(MCP_CANINTF, 0b00000001, 0);
 }
 
 void print_can(can_message *cm){
-	printf("Okidoki %d \n", cm->id);
-	printf("hIHIHI %d\n", cm->length);
-	for (int i = 0; i<cm->length; i++)
-	{
-		cm->data[i] = mcp2515_read(MCP_RXB0D0+i);
-	}
-	printf("yolo %s \n", cm->data);
+	printf("can id %d \n", cm->id);
+	printf("can length %d\n", cm->length);
+	printf("can data %s \n", cm->data);
+	
 }

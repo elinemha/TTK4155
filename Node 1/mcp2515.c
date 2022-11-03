@@ -18,6 +18,8 @@ void mcp_init()
 		printf (" MCP2515 is NOT in configs mode after reset !\n");
 	}
 	uint8_t BRP = can_cpu / (2* number_tq * baudrate);
+	mcp2515_bit_modify(MCP_CANINTE, 0b00000001, 0);
+	mcp2515_bit_modify(MCP_CANINTF, 0b00000001, 0);
 }
 
 uint8_t mcp2515_read(uint8_t address)

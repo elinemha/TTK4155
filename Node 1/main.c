@@ -100,17 +100,16 @@ int main()
 	
 		
 	printf("Starting...\n");
-	
 	uint8_t address_spi = 0x05;
 	uint8_t data_spi;
 	uint8_t status;
 	
 	can_message cm;
-	cm.id = 255;
-	cm.length = 2;
+	cm.id = 79;
+	cm.length = 3;
 	cm.data[0] = 'a';
 	cm.data[1] = 'b';
-	
+	cm.data[2] = '4';
 	canned(&cm);
 	_delay_ms(1);
 	can_rec(&cm);
@@ -188,8 +187,10 @@ int main()
 	SPI_write( MODE_NORMAL ); // Send data
 	PORTB |= (1 << DDB4 ); // Deselect CAN - controller
 	*/
+	
 	while(1)
 	{	
+	
 
 		/*
 		
