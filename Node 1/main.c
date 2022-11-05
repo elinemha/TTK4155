@@ -25,6 +25,7 @@
 
 
 
+
 void SRAM_test(void)
 {
 	volatile char *ext_ram = (char *) 0x1800; // Start address for the SRAM
@@ -88,14 +89,8 @@ int main()
 	
 	adc_init();
 	//oled_init();
-	//oled_reset();
-	//_delay_ms(1000);
-	//display_on();
-	//_delay_ms(1000);
-	//oled_reset();
-	
+
 	mcp_init();
-	//SPI_Init();
 	mcp2515_write(MCP_CANCTRL, MODE_LOOPBACK);
 	
 		

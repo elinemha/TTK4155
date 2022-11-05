@@ -5,6 +5,9 @@
 #define can_cpu 16000000
 #define number_tq 16
 #define baudrate 250000
+#define PROPAG 2
+#define PS1 6
+#define PS2 7
 
 void mcp_init()
 {
@@ -17,9 +20,14 @@ void mcp_init()
 	if (( value & MODE_MASK ) != MODE_CONFIG ) {
 		printf (" MCP2515 is NOT in configs mode after reset !\n");
 	}
+	
 	uint8_t BRP = can_cpu / (2* number_tq * baudrate);
+	
 	mcp2515_bit_modify(MCP_CANINTE, 0b00000001, 0);
 	mcp2515_bit_modify(MCP_CANINTF, 0b00000001, 0);
+	mcp2515_write(MCP_CNF1, SJW4 | (BRP-1));
+	mcp2515_write(MCP_CNF2, BTLMODE | SAMPLE_3X | ((PS1-1) << 3) | (PROPAG - 1));
+	mcp2515_write(MCP_CNF3, WAKFIL_DISABLE |(PS2 - 1));
 }
 
 uint8_t mcp2515_read(uint8_t address)
