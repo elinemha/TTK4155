@@ -3,7 +3,7 @@
 #include "spi_driver.h"
 
 #define can_cpu 16000000
-#define number_tq 16
+#define TQ 16
 #define baudrate 125000
 #define PROPSEG 2
 #define PS1 7
@@ -11,24 +11,23 @@
 
 void mcp_init()
 {
-	uint8_t value ;
+
 	SPI_Init();
 	mcp2515_reset();
-	//mcp2515_write(MCP_CANCTRL, MODE_LOOPBACK);
-	value = mcp2515_read( MCP_CANSTAT);
-	printf("%x \n", value);
+	uint8_t value = mcp2515_read( MCP_CANSTAT);
 	if (( value & MODE_MASK ) != MODE_CONFIG ) {
 		printf (" MCP2515 is NOT in configs mode after reset !\n");
 	}
 	
-	uint8_t BRP = can_cpu / (2* number_tq * baudrate); // BRP=4
+	uint8_t BRP = can_cpu / (2* TQ * baudrate); // BRP=4
 	
 	mcp2515_bit_modify(MCP_CANINTE, 0b00000001, 0);
 	mcp2515_bit_modify(MCP_CANINTF, 0b00000001, 0);
 	
-	mcp2515_write(MCP_CNF1, (BRP-1));
-	mcp2515_write(MCP_CNF2, 0xb1);
-	mcp2515_write(MCP_CNF3, 0x05);
+	mcp2515_write(MCP_CNF1, 0x03);	//BRP = 4
+	mcp2515_write(MCP_CNF2, 0xB1);	//PS1 = 7
+	mcp2515_write(MCP_CNF3, 0x05);	//PS2 = 6
+	
 }
 
 uint8_t mcp2515_read(uint8_t address)

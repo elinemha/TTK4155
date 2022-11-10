@@ -19,7 +19,7 @@ volatile uint8_t adc_read(uint8_t channel);
 
 uint8_t ADC_test(uint8_t channel);
 void ADC_clock(void);
-void ADC_read(void);
+uint8_t ADC_read();
 uint8_t ADC_tester(uint8_t channel);
 
 

@@ -9,27 +9,16 @@
 void can_init()
 {
 	mcp_init();
-	mcp2515_write(MCP_CANCTRL, MODE_LOOPBACK);	
-	
-}
-
-void can_send(can_message cm)
-{
-	mcp2515_write(0xaa, (uint8_t) cm.id);
-	
-	for (uint8_t i=0; i<cm.length; i++)
-	{
-		mcp2515_write(0xaa, (uint8_t) cm.data[i]);
+	mcp2515_write(MCP_CANCTRL, MODE_NORMAL);
+	uint8_t value = mcp2515_read(MCP_CANSTAT);
+	if (( value & MODE_MASK ) != MODE_NORMAL ) {
+		printf (" MCP2515 is NOT in normal mode!\n");
 	}
 }
 
+
 void canned(can_message* cm)
-{
-	//ID: TXBnSIDH & TXBnSIDL
-	//Length: TXBnDLC
-	//Data: TXBnDm
-	//+ RTS (TXBnCTRL.TXREQ)
-	
+{	
 	mcp2515_write(TXB0SIDH, cm->id>>3);
 	mcp2515_write(TXB0SIDL, cm->id<<5);
 	mcp2515_write(TXB0DLC, cm->length);
@@ -43,14 +32,9 @@ void canned(can_message* cm)
 }
 
 void can_rec(can_message* cm){
-	
-	//uint8_t var1 =  mcp2515_read(MCP_RXB0SIDH)>>3;
-	//uint8_t var2 =  mcp2515_read(MCP_RXB0SIDL)>>5;
 	cm->id = (mcp2515_read(MCP_RXB0SIDH)<<3) | (mcp2515_read(MCP_RXB0SIDL)>>5);
-//	cm->id = mcp2515_read(MCP_RXB0SIDH);
 	cm->length = mcp2515_read(MCP_RXB0DLC);
-	for (int i = 0; i<cm->length; i++)
-	{
+	for (int i = 0; i<cm->length; i++){
 		cm->data[i] = mcp2515_read(MCP_RXB0D0 + i);
 	}
 	mcp2515_bit_modify(MCP_CANINTF, 0b00000001, 0);

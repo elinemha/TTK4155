@@ -9,12 +9,17 @@
 #define RIGHT_SLIDER 3
 
 
+void joystick_init()
+{
+	PORTB |= (1<<PB2);
+	DDRB |= (1<<DDB2);
+}
+
 JOYSTICK_POS read_joystick_pos()
 {
 	JOYSTICK_POS pos_j;
 	pos_j.x = (int)adc_read(JOYSTICK_DIRECTION_X);
 	pos_j.y = (int)adc_read(JOYSTICK_DIRECTION_Y);
-
 	return pos_j;
 }
 
@@ -129,6 +134,7 @@ JOYSTICK_DIR input_joystick_dir(JOYSTICK_POS pos_j)
 
 void print_joystick_pos(JOYSTICK_POS pos)
 {
+	pos = read_joystick_pos();
 	printf("Joystick X Position: %4d\n ", pos.x);
 	printf("Joystick Y Position: %4d\n ", pos.y);
 }

@@ -152,6 +152,9 @@
     <Compile Include="adc_driver.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="basic_defs.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="basic_defs.h">
       <SubType>compile</SubType>
     </Compile>
@@ -159,6 +162,9 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="can.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="codeFromMain.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="fonts.h">

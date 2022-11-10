@@ -35,12 +35,13 @@ SLIDER_POS calibrate_slider_pos(SLIDER_POS pos_s_in);
 JOYSTICK_POS joystick_analog_pos(JOYSTICK_POS pos_j_in);
 JOYSTICK_DIR input_joystick_dir(JOYSTICK_POS pos_j);
 
-void print_joystick_pos(JOYSTICK_POS pos);
+void print_joystick_pos();
 void print_slider_pos(SLIDER_POS pos);
 void print_joystick_dir(JOYSTICK_DIR dir);
 int	left_button_press();
 int right_button_press();
 int joystick_button_press();
+void joystick_init();
 
 
 

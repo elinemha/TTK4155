@@ -96,17 +96,13 @@ void ADC_clock(void)
 	OCR0 = 0x04;
 }
 
-void ADC_read(void)
+uint8_t ADC_read()
 {
 	volatile char *ext_ram = (char *) 0x1400; // Start address for the SRAM
-	uint16_t ext_ram_size = 0x400;
-
-	printf("Reading ADC...\n");
-	
-	for (uint16_t i = 0; i < ext_ram_size; i++) {
-		uint8_t retreived_value = ext_ram[i];
-		printf("Retrieval Value: %02X \n", retreived_value);
-	}
+	return ext_ram[0];
+	//uint16_t ext_ram_size = 0x400;
+	//for (uint16_t i = 0; i < ext_ram_size; i++) {
+	//	uint8_t retreived_value = ext_ram[i]; }
 }
 
 uint8_t ADC_tester(uint8_t channel)
