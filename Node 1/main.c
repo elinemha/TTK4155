@@ -91,7 +91,13 @@ int main()
 	//oled_init();
 
 	mcp_init();
-	mcp2515_write(MCP_CANCTRL, MODE_LOOPBACK);
+	mcp2515_write(MCP_CANCTRL, MODE_NORMAL);
+	
+	uint8_t value = mcp2515_read( MCP_CANSTAT);
+	printf("%x \n", value);
+	if (( value & MODE_MASK ) != MODE_NORMAL ) {
+		printf (" MCP2515 is NOT in normal mode!\n");
+	}
 	
 		
 	printf("Starting...\n");
@@ -100,16 +106,13 @@ int main()
 	uint8_t status;
 	
 	can_message cm;
-	cm.id = 79;
+	//can_message cm3;
+	cm.id = 77;
 	cm.length = 3;
 	cm.data[0] = 'a';
 	cm.data[1] = 'b';
 	cm.data[2] = '4';
-	canned(&cm);
-	_delay_ms(1);
-	can_rec(&cm);
-	_delay_ms(1);
-	print_can(&cm);
+
 
 	/*
 
@@ -183,8 +186,15 @@ int main()
 	PORTB |= (1 << DDB4 ); // Deselect CAN - controller
 	*/
 	
+	
+
 	while(1)
 	{	
+		canned(&cm);
+		_delay_ms(1);
+	//	can_rec(&cm);
+	//	print_can(&cm);
+	
 	
 
 		/*
