@@ -30,7 +30,7 @@ void configure_uart(void);
 int uart_getchar(uint8_t *c);
 int uart_putchar(const uint8_t c);
 
-void UART_Handler       ( void );
+void UART_Handler ( void );
 
 
 
