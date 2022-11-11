@@ -22,9 +22,9 @@
 
 int main()
 {	
-	volatile JOYSTICK_POS pos_j;
-	volatile SLIDER_POS pos_s;
-	volatile JOYSTICK_DIR dir_j;
+	//volatile JOYSTICK_POS pos_j;
+	//volatile SLIDER_POS pos_s;
+	//volatile JOYSTICK_DIR dir_j;
 	 
 	USART_Init(MY_UBRR);
 	fdevopen(&USART_Transmit,&USART_Receive);
@@ -55,7 +55,7 @@ int main()
 		*/
 	
 	can_message can_joy;
-	JOYSTICK_POS joy_pos;
+	volatile JOYSTICK_POS joy_pos;
 	uint8_t id = 0;
 	while(1)
 	{	
