@@ -166,7 +166,15 @@ uint8_t can_send(CAN_MESSAGE* can_msg, uint8_t tx_mb_id)
  * \retval Success(0) or failure(1)
  */
 uint8_t can_receive(CAN_MESSAGE* can_msg, uint8_t rx_mb_id)
-{
+{	
+	char can_sr = CAN0->CAN_SR;
+	
+	//RX interrupt
+	if(can_sr & (CAN_SR_MB1 | CAN_SR_MB2) )//Only mailbox 1 and 2 specified for receiving
+	{
+		CAN_MESSAGE message;
+		if(can_sr & CAN_SR_MB1)  //Mailbox 1 event
+		{
 	//Check that mailbox is ready
 	if(CAN0->CAN_MB[rx_mb_id].CAN_MSR & CAN_MSR_MRDY)
 	{
@@ -204,11 +212,18 @@ uint8_t can_receive(CAN_MESSAGE* can_msg, uint8_t rx_mb_id)
 	{
 		return 1;
 	}
+	
+		}
+	}
 }
 
 void print_can(CAN_MESSAGE *cm){
 	printf("can id %d \n", cm->id);
 	printf("can length %d\n", cm->data_length);
-	printf("can data %s \n", cm->data);
+	for(int i = 0; i < cm->data_length;i++)
+	{
+		printf("can data %d: %x \n", i, cm->data[i]);
+	}
+	
 }
 
