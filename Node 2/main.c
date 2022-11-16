@@ -14,6 +14,7 @@
 #include "timer.h"
 #include "pwm.h"
 #include "adc_due.h"
+#include "controller.h"
 
 #define CAN_BR_1 0x00290165
 
@@ -32,6 +33,13 @@ int main(void)
 	//timer_init_0();
 	PWM_init();
 	adc_init();
+	
+	dac_init();
+	motor_init();
+	MOTOR_DIRECTION md = LEFT;
+	//set_direction(md);
+	uint8_t motor_speed = 0x00;
+	set_speed(motor_speed);
 	
 	int score = 0;
 
@@ -66,6 +74,9 @@ int main(void)
 			score += 1;
 		}
 		printf("Score: %d \n", score);
+		set_speed(motor_speed);
+		
+		
 		
     }
 }

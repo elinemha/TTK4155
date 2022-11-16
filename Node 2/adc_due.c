@@ -10,7 +10,7 @@
 #include "adc_due.h"
 #include <stdio.h>
 
-#define IR_THRESHOLD	200
+#define IR_THRESHOLD	100
 
 void adc_init(){
 	REG_PMC_PCER1 |= PMC_PCER1_PID37;

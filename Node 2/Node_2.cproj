@@ -163,6 +163,12 @@
     <Compile Include="adc_due.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="controller.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="controller.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Device_Startup\startup_sam3xa.c">
       <SubType>compile</SubType>
     </Compile>
