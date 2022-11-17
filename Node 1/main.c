@@ -53,18 +53,24 @@ int main()
 		cm.data[0] = 'a';
 		cm.data[1] = 'b';
 		*/
-	
+
 	can_message can_joy;
 	volatile JOYSTICK_POS joy_pos;
+	
+	
 	uint8_t id = 0;
 	while(1)
 	{	
 		joy_pos = read_joystick_pos();
+	//	joy_pos = calibrate_slider_pos(joy_pos);
 		can_joy.id = id;
-		can_joy.length = 2;
+		can_joy.length = 5;
 		can_joy.data[0] = joy_pos.x;
 		can_joy.data[1] = joy_pos.y;
-		printf("x:%d , y: %d", can_joy.data[0], can_joy.data[1]);
+		can_joy.data[2] = joy_pos.left;
+		can_joy.data[3] = joy_pos.right;
+		can_joy.data[4] = joy_pos.button;
+		printf("x:%d , y: %d, ledt: %d, right: %d, button: %d", can_joy.data[0], can_joy.data[1], can_joy.data[2], can_joy.data[3], can_joy.data[4]);
 		canned(&can_joy);
 		_delay_ms(200);
 		id += 1;
