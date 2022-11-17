@@ -8,6 +8,7 @@
 
 //#include <stdlib.h>
 #include "controller.h"
+#include <stdint.h>
 
 #define DIR PIO_PD10
 #define EN PIO_PD9
@@ -19,8 +20,9 @@
 #define MJ2_PORT 0x1FE
 
 
-///PI defs
+uint8_t maxSpeed = 255;
 
+//PID parameters
 float Time_sample = 0.0001;
 float kp;
 float ki;
@@ -177,12 +179,11 @@ void calibrate_encoder(){
 	
 }*/
 
-
 void controller_init()
 {
-	kp = 1;
-	ki = 2;
-	kd = 0.1;
+	kp = 2;
+	ki = 4;
+	kd = 0.2;
 
 	reference   = 0;
 	integral    = 0;

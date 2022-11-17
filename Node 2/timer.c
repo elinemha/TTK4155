@@ -13,6 +13,20 @@
 
 
 void timer_init_0(void){
+	PMC->PMC_PCER0 = (1<<ID_TC0);
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	/*Clear Wakekey here?SCH
 	PMC->PMC_PCER0 = (1<<ID_TC0);
 	PMC->PMC_PCER0 |= PMC_PCER0_PID25;	//enable timer0
