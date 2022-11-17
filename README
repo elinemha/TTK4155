@@ -12,6 +12,6 @@ Output of Op-Amp to AD7 on shield for reading IR light
 On MJEX AO IS DA1
 
 IR emitter: Straight leg to +
-IR phtodiode: Crooked leg to +
+IR phtodiode: Long leg to -
 
 Relay: Top right to AtSAM, top left to soloide
