@@ -22,7 +22,7 @@ JOYSTICK_POS read_joystick_pos()
 	pos_j.y = (int)adc_read(JOYSTICK_DIRECTION_Y);
 	pos_j.left = (int)adc_read(LEFT_SLIDER);
 	pos_j.right = (int)adc_read(RIGHT_SLIDER);
-	pos_j.button =  (PIND & (1<< PD4));
+	pos_j.button =  (PIND & (1<< PD5));
 	return pos_j;
 }
 

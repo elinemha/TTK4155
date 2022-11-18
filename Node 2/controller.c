@@ -32,6 +32,7 @@ float reference;
 float integral;
 float prev_error;
 float derivative;
+float sum_error;
 
 int16_t maxOutput = 15000; //fact check
 uint8_t max_u = 51200;
@@ -181,9 +182,9 @@ void calibrate_encoder(){
 
 void controller_init()
 {
-	kp = 2;
-	ki = 4;
-	kd = 0.2;
+	kp = 6;
+	ki = 8;
+	kd = 0.8;
 
 	reference   = 0;
 	integral    = 0;
@@ -192,14 +193,16 @@ void controller_init()
 }
 
 
-// PI controller for motor position
-int16_t position_controller(int16_t enc_data, uint8_t slider_pos)
+// PID controller for motor position
+int16_t position_controller(int16_t enc_pos, uint8_t slider_pos)
 {
 	reference = slider_pos;
-	float error = reference - abs(enc_data);				// position = y
-	integral += error * Time_sample;
-	derivative = -(error-prev_error)/Time_sample;
+	int16_t error = reference - abs(enc_pos);				// position = y
+	sum_error += error;
+	integral = sum_error * Time_sample;
+	derivative = (error-prev_error)/Time_sample;
 	
+	printf("Error: %d \n", error);
 	int16_t sum_error = 0;
 	sum_error += error;
 	
@@ -212,7 +215,7 @@ int16_t position_controller(int16_t enc_data, uint8_t slider_pos)
 	int32_t u_i = ki*integral;
 	int32_t u_d = kd*derivative;
 	
-	int16_t u_t = u_p + u_i + u_d;				//u_t output from PI sum operation, u[n] = Kp*e[n]+T*Ki*sum_error
+	int16_t u_t = u_p + u_i + u_d;				//u_t output from PI sum operation, u[n] = Kp*e[n]+T*Ki*sum_error+Kd*(error-error_prev)/T
 	
 	// avoiding integral windup
 	if((abs(sum_error) > maxOutput) && sum_error >= 0){
@@ -232,63 +235,17 @@ int16_t position_controller(int16_t enc_data, uint8_t slider_pos)
 	
 	prev_error = error;         //stores error for next run
 	
+	//printf("u_t: %d \n", u_t);
+	
 	return abs(u_t);
 }
-
-
-
 
 /**
-// PID controller for motor position
-int16_t position_controller(int16_t enc_data, uint8_t joystick_pos)
-{
-	int16_t sum_error = 0;
-	//float reference =  joystick_pos;					// r = joystick position
-	float error = abs(joystick_pos) - abs(enc_data);				// encoder position = y
-	printf("reference: %d \n", joystick_pos);
-	printf("encoder: %d \n", enc_data);
-	sum_error += error;
-	integral = sum_error * Time_sample;
-	derivative = (error-prev_error)/Time_sample;
-	
-	//Convert joystick position to valid range
-	//reference = enc_data;
-	
-	
-	if (error<1)
-	{
-		integral = 0;
-	}
-	
-	int32_t u_p = kp*error;
-	int32_t u_i = ki*integral;
-	int32_t u_d = kd*derivative;
-	
-	int16_t u_t = u_p + u_i; // + u_d;				//u_t output from PI sum operation, u[n] = Kp*e[n]+T*Ki*sum_error
-	
-	printf("u_t: %d \n", u_t);
-	prev_error = error;							//stores error for next run
-	
-	// limit total gain
-	if (u_t > max_u)
-	{
-		u_t = max_u;
-	}
-	
-	if (u_t < -max_u)
-	{
-		u_t = -max_u;
-	}
-	
-	// avoiding gain windup
-	// avoiding integral windup
-	if((abs(sum_error) > maxOutput) && sum_error >= 0){
-		sum_error = maxOutput;
-	}
-	else if ((abs(sum_error) > maxOutput) && sum_error <= 0){
-		sum_error = -maxOutput;
-	}
-	
-	return abs(u_t);
+void driveleft(){
+	//set LEFT
+	set_direction(LEFT);
+	set_speed(0x1000);
 }
-*/
+
+**/
+

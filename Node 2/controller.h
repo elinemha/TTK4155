@@ -34,9 +34,9 @@ void set_speed(int16_t speed_joystick);
 void reset_encoder();
 void controller_init();
 int16_t position_controller(int16_t enc_data, uint8_t slider_pos);
-//void remote_kp(float new_kp);
 float pid_generate(float r, float y, float dt);
 int16_t MOTOR_PIDcontroller_Pos(uint8_t pos);
 void motorSpeedPos(uint16_t pos);
+//void driveleft();
 
 #endif /* CONTROLLER_H_ */
