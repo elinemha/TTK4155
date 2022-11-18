@@ -51,7 +51,7 @@ uint32_t getMillis(void)
 {
 	return ms_ticks;
 }
-void ms_delay(uint32_t delay)
+void us_delay(uint32_t delay)
 {
 	uint32_t prevMillis = getMillis() + delay;
 	while (getMillis() != prevMillis);
@@ -99,11 +99,11 @@ int16_t read_encoder()
 	int16_t enc_data;
 	REG_PIOD_CODR = NOT_OE;
 	REG_PIOD_CODR = SEL;
-	ms_delay(25);
+	us_delay(25);
 	uint8_t high_byte = (uint8_t) ((REG_PIOC_PDSR & MJ2_PORT) >> 1);
 	
 	REG_PIOD_SODR = SEL;	
-	ms_delay(25);
+	us_delay(25);
 	uint8_t low_byte = (uint8_t) ((REG_PIOC_PDSR & MJ2_PORT) >> 1);
 	
 	REG_PIOD_CODR |= PIO_CODR_P1;
@@ -136,7 +136,7 @@ void set_speed(int16_t speed_joystick)
 
 void reset_encoder(){
 	PIOD->PIO_CODR |= NOT_RST;
-	ms_delay(100);
+	us_delay(100);
 	PIOD->PIO_SODR |= NOT_RST;
 }
 

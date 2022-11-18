@@ -57,8 +57,8 @@ int main(void)
 	printf("STARTING... ");
 	
 	set_direction(LEFT);
-	set_speed(0xFF00);
-//	ms_delay(50000000000000);
+	set_speed(0x0F00);
+	us_delay(2000000);
 	
     while (1) 
     {
@@ -104,7 +104,7 @@ int main(void)
 		
 		left_slider_pos_previous = left_slider_pos;
 		
-		ms_delay(100000);	
+		us_delay(100000);	
 				
 		uint16_t IR_value = read_IR();
 		int goal = goal_scored(IR_value);

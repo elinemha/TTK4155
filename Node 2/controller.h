@@ -23,7 +23,7 @@ typedef enum {
 void systick_setup(uint32_t sys_freq);
 void SysTick_Handler(void);
 uint32_t getMillis(void);
-void ms_delay(uint32_t delay);
+void us_delay(uint32_t delay);
 
 void dac_init();
 void motor_init();
