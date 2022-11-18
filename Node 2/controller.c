@@ -5,8 +5,6 @@
  *  Author: emmalle
  */ 
 
-
-//#include <stdlib.h>
 #include "controller.h"
 #include <stdint.h>
 
@@ -18,7 +16,6 @@
 
 // D0-D7 ARE PC1-8
 #define MJ2_PORT 0x1FE
-
 
 uint8_t maxSpeed = 255;
 
@@ -35,7 +32,6 @@ float derivative;
 float sum_error;
 
 int16_t maxOutput = 15000; //fact check
-uint8_t max_u = 51200;
 
 volatile uint32_t ms_ticks = 0;
 
@@ -55,54 +51,34 @@ uint32_t getMillis(void)
 {
 	return ms_ticks;
 }
-void ms_delay(uint16_t delay)
+void ms_delay(uint32_t delay)
 {
 	uint32_t prevMillis = getMillis() + delay;
-	//while (getMillis() <= prevMillis + delay){}
 	while (getMillis() != prevMillis);
 }
 
 
 void dac_init(){
-
 	REG_PMC_PCER1 |= PMC_PCER1_PID38;
-	//REG_DACC_CR |= DACC_CR_SWRST;
 	REG_DACC_MR |= DACC_MR_USER_SEL_CHANNEL1 | DACC_MR_WORD_HALF | DACC_MR_STARTUP_0 |DACC_MR_TRGEN_DIS;
 	REG_DACC_CHER = DACC_CHER_CH1;
-
-	//REG_DACC_CDR = 0;
-	//REG_PMC_PCER0 |= NOT_OE
 }
 
 void motor_init(){
-	//REG_PIOD_PER |= DIR | EN | SEL | NOT_OE | NOT_RST;
 	PIOD->PIO_PER |= DIR | EN | SEL | NOT_OE | NOT_RST;
-	//REG_PIOD_OER |= DIR | EN | SEL | NOT_OE | NOT_RST;
 	PIOD->PIO_OER |= DIR | EN | SEL | NOT_OE | NOT_RST;
 	
-	//REG_PIOC_PER |= MJ2_PORT;
 	PIOC->PIO_PER |= MJ2_PORT;
-	//REG_PIOC_ODR |= MJ2_PORT;
 	PIOC->PIO_ODR |= MJ2_PORT;
 	
-	//REG_PMC_PCR = PMC_PCR_EN | PMC_PCR_DIV_PERIPH_DIV_MCK | (ID_PIOC << PMC_PCR_PID_Pos);
 	PMC->PMC_PCR = PMC_PCR_EN | PMC_PCR_DIV_PERIPH_DIV_MCK | (ID_PIOC << PMC_PCR_PID_Pos);
-	//REG_PMC_PCER0 |= 1 << (ID_PIOC);
 	PMC->PMC_PCER0 |= 1 << (ID_PIOC);
 	
-	//REG_PIOD_SODR |= EN;
 	PIOD->PIO_SODR |= EN;
-	//REG_PIOD_SODR |= SEL;
-	//REG_PIOD_SODR |= DIR;
 	PIOD->PIO_SODR |= DIR;
-	//REG_PIOD_SODR |= DIR;	
 	
 	REG_PIOC_IFER = (0xFF<<1);
 	REG_PIOC_PUDR = (0xFF)<<1;
-	
-	
-	//PIOD->PIO_CODR |= NOT_RST;
-	//PIOD->PIO_SODR |= NOT_RST;
 	
 }
 
@@ -121,22 +97,13 @@ void set_direction(MOTOR_DIRECTION direction)
 int16_t read_encoder()
 {
 	int16_t enc_data;
-	//REG_PIOD_CODR |= (NOT_OE);
-	//REG_PIOD_CODR |= (SEL);
-	//PIOD->PIO_ODSR &= ~(NOT_OE);
-	//PIOD->PIO_ODSR &= ~(SEL);
 	REG_PIOD_CODR = NOT_OE;
 	REG_PIOD_CODR = SEL;
 	ms_delay(25);
-
-	//enc_byte |= ((REG_PIOC_PDSR & 0xFF) << 8);
 	uint8_t high_byte = (uint8_t) ((REG_PIOC_PDSR & MJ2_PORT) >> 1);
-	REG_PIOD_SODR = SEL;
 	
-	
+	REG_PIOD_SODR = SEL;	
 	ms_delay(25);
-	
-	//enc_byte |= ((REG_PIOC_PDSR >> 1) & 0xFF);
 	uint8_t low_byte = (uint8_t) ((REG_PIOC_PDSR & MJ2_PORT) >> 1);
 	
 	REG_PIOD_CODR |= PIO_CODR_P1;
@@ -165,8 +132,6 @@ int16_t read_encoder()
 void set_speed(int16_t speed_joystick)
 {
 	REG_DACC_CDR = speed_joystick;
-	
-	//while(!REG_DACC_ISR & DACC_ISR_EOC);
 }
 
 void reset_encoder(){
@@ -175,10 +140,6 @@ void reset_encoder(){
 	PIOD->PIO_SODR |= NOT_RST;
 }
 
-/*
-void calibrate_encoder(){
-	
-}*/
 
 void controller_init()
 {
@@ -192,7 +153,6 @@ void controller_init()
 
 }
 
-
 // PID controller for motor position
 int16_t position_controller(int16_t enc_pos, uint8_t slider_pos)
 {
@@ -203,8 +163,8 @@ int16_t position_controller(int16_t enc_pos, uint8_t slider_pos)
 	derivative = (error-prev_error)/Time_sample;
 	
 	printf("Error: %d \n", error);
-	int16_t sum_error = 0;
-	sum_error += error;
+	//int16_t sum_error = 0;
+	//sum_error += error;
 	
 	if (error<1)
 	{
@@ -234,18 +194,6 @@ int16_t position_controller(int16_t enc_pos, uint8_t slider_pos)
 	}
 	
 	prev_error = error;         //stores error for next run
-	
-	//printf("u_t: %d \n", u_t);
-	
+		
 	return abs(u_t);
 }
-
-/**
-void driveleft(){
-	//set LEFT
-	set_direction(LEFT);
-	set_speed(0x1000);
-}
-
-**/
-

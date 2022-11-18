@@ -11,12 +11,11 @@
 #include "can_interrupt.h"
 #include "uart.h"
 #include "printf-stdarg.h"
-#include "timer.h"
 #include "pwm.h"
 #include "adc_due.h"
 #include "controller.h"
 #include "sam3x8e.h"
-
+#include "solenoid.h"
 
 #define CAN_BR_1 0x00290165
 
@@ -37,17 +36,17 @@ int main(void)
 	WDT->WDT_MR |= WDT_MR_WDDIS;
 	configure_uart();
 	can_init_def_tx_rx_mb(CAN_BR_1);
-	//timer_init_0();
 	PWM_init();
 	adc_init();
 	
 	dac_init();
 	motor_init();
 	controller_init();
+	solenoid_init();
 	
 	int16_t enc_pos;
 	int16_t motor_pos;
-	uint8_t expected_pos = 0;
+	int16_t expected_pos = 0;
 	
 	MOTOR_DIRECTION md = RIGHT;
 	
@@ -56,70 +55,58 @@ int main(void)
 	uint8_t pos, pos_pre;
 	
 	printf("STARTING... ");
-	/*
-	CAN_MESSAGE cm;
-	uint8_t tx_mb_id = 0x00;
-	uint8_t rx_mb_id = 0x01;*/
-
-    /* Replace with your application code */
-	//char b = "b";
-	
-	//CAN_MESSAGE cm;
-	//set_speed(0x08F0);
 	
     while (1) 
     {
 		CAN0_Handler();
-		//can_receive(&cm, 1);
+		int punch = message.data[4];
+		solenoid_punch(punch);
 		pos = message.data[2];
-		int joy_value = map(message.data[0], 0, 255, 920, 2080);
-		int16_t joy_speed = map(message.data[0]-50, 0, 255, 0x0100, 0xFFF);
+		int joy_value = map(message.data[1]-15, 0, 255, 2080, 920);
+		uint8_t joy_x = message.data[0];
+		int16_t joy_speed = map(joy_x - 50, 0, 255, 0x0100, 0xFFF);
 		
 		PWM_setDC(joy_value);
 			
+		//if (joy_x < 180)
 		if (pos < pos_pre-5)
 		{
 			md = LEFT;
 			set_direction(md);
-			expected_pos -= 1;
+			expected_pos -= joy_x*2;
 			if (expected_pos < 0)
 			{
 				expected_pos = 0;
 			}
 		}
+		//else if (joy_x > 205)
 		else if (pos > pos_pre+5)
 		{
 			md = RIGHT;
 			set_direction(md);
-			expected_pos += 1;
-			if (expected_pos >= 255)
+			expected_pos += joy_x*2;
+			if (expected_pos >= 65535)
 			{
-				expected_pos = 255;
+				expected_pos = 65535;
 			}
 		}
 		
 		enc_pos = read_encoder();
 		
 		motor_pos = position_controller(enc_pos,pos);
-		//motor_init();
-		set_speed(motor_pos/8);
-		
-		//motorSpeedPos(message.data[2]);
-		
+		//motor_pos = position_controller(enc_pos,expected_pos);
+		set_speed(motor_pos);		
 		
 		printf("Expected Position: %d \n", message.data[2]);
+		//printf("Expected Position: %d \n", expected_pos);
 		printf("Encoder Position: %d \n", enc_pos);
 		printf("Motor Position: %d \n", motor_pos);
 		
 		
 		pos_pre = pos;
 		
-		ms_delay(100000);	
-				
-		//can_receive(&cm, rx_mb_id);
-		//can_send(&cm, tx_mb_id);
-		//print_can(&cm);
-		//printf("Node 2");
+		ms_delay(10000);
+		
 		uint16_t a = read_IR();
 		int b = goal_scored(a);
 		/*

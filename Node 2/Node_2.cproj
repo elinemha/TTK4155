@@ -193,10 +193,10 @@
     <Compile Include="sam_led.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="timer.c">
+    <Compile Include="solenoid.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="timer.h">
+    <Compile Include="solenoid.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="uart.c">

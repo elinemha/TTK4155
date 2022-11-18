@@ -9,9 +9,7 @@
  */ 
 
 #include "can_controller.h"
-
 #include "sam.h"
-
 #include "printf-stdarg.h"
 
 
@@ -217,6 +215,7 @@ uint8_t can_receive(CAN_MESSAGE* can_msg, uint8_t rx_mb_id)
 	}
 }
 
+// Custom print function for printing CAN message
 void print_can(CAN_MESSAGE *cm){
 	printf("can id %d \n", cm->id);
 	printf("can length %d\n", cm->data_length);

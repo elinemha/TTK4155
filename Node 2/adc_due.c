@@ -32,6 +32,3 @@ int goal_scored(uint16_t beam){
 		return 0;
 	}
 }
-//ADC_CDR[n]
-	
-//	ADC_LCDR

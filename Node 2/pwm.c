@@ -1,6 +1,5 @@
 
 #include "pwm.h"
-#include "timer.h"
 #include "sam.h"
 
 #define RC_DUTY 840000
@@ -11,13 +10,9 @@
 #define duty_slpe 504
 #define duty_intercept 37800
 
-//#include <avr/interrupt.h>
 
-// init PWM
 void PWM_init()
 {
-// PWM_CPRDUPDx, PWM_CDTYUPDx and PWM_DTUPDx must be updated by CPU
-// use UPDULOCK to trigger this update, 1 = update, 0 = locked
 	REG_PMC_PCER1 |= PMC_PCER1_PID36;
 	REG_PIOC_PDR |= PIO_PDR_P19;
 	REG_PIOC_ABSR |= PIO_ABSR_P19;

@@ -12,12 +12,8 @@
 #include <stdint.h>
 #include <stdio.h>
 
-
 uint16_t read_IR();
 void adc_init();
 int goal_scored(uint16_t beam);
-
-
-
 
 #endif /* adc_due_h_ */
