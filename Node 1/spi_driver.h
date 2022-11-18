@@ -17,5 +17,4 @@ uint8_t SPI_read(void);
 void SPI_SlaveInit(void);
 char SPI_SlaveReceive(void);
 
-
 #endif

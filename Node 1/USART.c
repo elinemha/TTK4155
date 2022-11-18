@@ -5,7 +5,7 @@ volatile static uint8_t rx_buffer[RX_BUFFER_SIZE] = {0};
 volatile static uint16_t rx_count = 0;
 
 
-void USART_Init(unsigned int baud )
+void USART_Init(unsigned int baud ) // Initialize USART
 {
 	/*
 	Set baud rate
@@ -22,7 +22,7 @@ void USART_Init(unsigned int baud )
 	UCSR0C = (1<<URSEL0) | (1<<UCSZ01) | (1<<UCSZ00) ;
 }
 
-int USART_Transmit(char data, FILE* JUSTNAME )
+int USART_Transmit(char data, FILE* JUSTNAME ) // USART Transmission
 {
 	/*
 	Wait for empty transmit buffer
@@ -36,7 +36,7 @@ int USART_Transmit(char data, FILE* JUSTNAME )
 	return 0;
 }
 
-int USART_Receive(FILE* JUSTNAME )
+int USART_Receive(FILE* JUSTNAME ) // USART Reception
 {
 	/*
 	Wait for data to be received
@@ -48,18 +48,3 @@ int USART_Receive(FILE* JUSTNAME )
 	*/
 	return UDR0;
 }
-
-/*
-ISR(USART_RX_vect){
-	
-	volatile static uint16_t rx_write_pos = 0;
-	
-	rx_buffer[rx_write_pos] = UDR0;
-	rx_count++;
-	rx_write_pos++;
-	if(rx_write_pos >= RX_BUFFER_SIZE){
-		rx_write_pos = 0;
-	}
-	
-}
-*/

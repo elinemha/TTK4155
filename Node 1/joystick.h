@@ -15,7 +15,7 @@ typedef struct {
 	int left;
 	int right;
 	int button;
-} JOYSTICK_POS;
+} CONTROL_BOARD;
 
 
 typedef enum {
@@ -26,26 +26,14 @@ typedef enum {
 	NEUTRAL
 } JOYSTICK_DIR;
 
-/*typedef struct {
-	int left;
-	int right;
-} SLIDER_POS;
-*/
-
-JOYSTICK_POS read_joystick_pos();
-//SLIDER_POS read_slider_pos();
-//JOYSTICK_POS calibrate_slider_pos(JOYSTICK_POS pos_s_in);
-JOYSTICK_POS joystick_analog_pos(JOYSTICK_POS pos_j_in);
-JOYSTICK_DIR input_joystick_dir(JOYSTICK_POS pos_j);
-
-void print_joystick_pos();
-//void print_slider_pos(SLIDER_POS pos);
+void joystick_init();
+CONTROL_BOARD read_board_positions();
+CONTROL_BOARD calibrate_positions(CONTROL_BOARD pos_in);
+JOYSTICK_DIR input_joystick_dir(CONTROL_BOARD pos_j);
+void print_positions();
 void print_joystick_dir(JOYSTICK_DIR dir);
 int	left_button_press();
 int right_button_press();
 int joystick_button_press();
-void joystick_init();
-
-
 
 #endif

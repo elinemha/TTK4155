@@ -4,8 +4,6 @@
 #define USART_H_
 
 #define RX_BUFFER_SIZE 128
-
-
 #define F_CPU 4915200
 #define BAUD 9600
 
@@ -15,7 +13,6 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
-
 
 void USART_Init(unsigned int baud );
 int USART_Transmit(char data, FILE* JUSTNAME );

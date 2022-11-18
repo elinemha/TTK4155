@@ -15,9 +15,9 @@ void joystick_init()
 	DDRB |= (1<<DDB2);
 }
 
-JOYSTICK_POS read_joystick_pos()
+CONTROL_BOARD read_board_positions()
 {
-	JOYSTICK_POS pos_j;
+	CONTROL_BOARD pos_j;
 	pos_j.x = (int)adc_read(JOYSTICK_DIRECTION_X);
 	pos_j.y = (int)adc_read(JOYSTICK_DIRECTION_Y);
 	pos_j.left = (int)adc_read(LEFT_SLIDER);
@@ -26,47 +26,32 @@ JOYSTICK_POS read_joystick_pos()
 	return pos_j;
 }
 
-/*SLIDER_POS read_slider_pos()
+CONTROL_BOARD calibrate_positions(CONTROL_BOARD pos_in)
 {
-	SLIDER_POS pos_s;
-	pos_s.left = (int)adc_read(LEFT_SLIDER);
-	pos_s.right = (int)adc_read(RIGHT_SLIDER);
+	CONTROL_BOARD pos_out;
 
-	return pos_s;
-}*/
+	pos_out.x		 = pos_in.x - 127;
+	pos_out.y		 = pos_in.y - 127;
+	pos_out.left = pos_in.left - (255/pos_in.left) + 1;
+	pos_out.right = pos_in.right - (255/pos_in.right) + 1;
+	pos_out.button = pos_in.button;
 
-/*JOYSTICK_POS calibrate_slider_pos(JOYSTICK_POS pos_s_in)
-{
-	JOYSTICK_POS pos_s_out;
-	pos_s_out.left = pos_s_in.left - (255/pos_s_in.left) + 1;
-	pos_s_out.right = pos_s_in.right - (255/pos_s_in.right) + 1;
-
-	return pos_s_out;
-}*/
-
-JOYSTICK_POS joystick_analog_pos(JOYSTICK_POS pos_j_in)
-{
-	JOYSTICK_POS pos_j_out;
-
-	pos_j_out.x = pos_j_in.x - 127;
-	pos_j_out.y = pos_j_in.y - 127;
-
-	if(pos_j_out.x > 127)
+	if(pos_out.x > 127)
 	{
-		pos_j_out.x = 127;
+		pos_out.x = 127;
 	}
-	if(pos_j_out.y > 127)
+	if(pos_out.y > 127)
 	{
-		pos_j_out.y = 127;
+		pos_out.y = 127;
 	}
 
-	pos_j_out.x = pos_j_out.x*100/127;
-	pos_j_out.y = pos_j_out.y*100/127;
+	pos_out.x = pos_in.x*100/127;
+	pos_out.y = pos_in.y*100/127;
 
-	return pos_j_out;
+	return pos_out;
 }
 
-JOYSTICK_DIR input_joystick_dir(JOYSTICK_POS pos_j)
+JOYSTICK_DIR input_joystick_dir(CONTROL_BOARD pos_j)
 {
 	if (pos_j.x > 35)
 	{
@@ -135,18 +120,13 @@ JOYSTICK_DIR input_joystick_dir(JOYSTICK_POS pos_j)
 	}
 }
 
-void print_joystick_pos(JOYSTICK_POS pos)
+void print_positions(CONTROL_BOARD pos)
 {
-	pos = read_joystick_pos();
 	printf("Joystick X Position: %4d\n ", pos.x);
 	printf("Joystick Y Position: %4d\n ", pos.y);
-}
-
-/*void print_slider_pos(SLIDER_POS pos)
-{
 	printf("Left Slider Position: %4d\n ", pos.left);
 	printf("Right Slider Position: %4d\n ", pos.right);
-}*/
+}
 
 void print_joystick_dir(JOYSTICK_DIR dir)
 {

@@ -17,7 +17,7 @@ void can_init()
 }
 
 
-void canned(can_message* cm)
+void can_send(can_message* cm)
 {	
 	mcp2515_write(TXB0SIDH, cm->id>>3);
 	mcp2515_write(TXB0SIDL, cm->id<<5);

@@ -1,6 +1,6 @@
 #include "spi_driver.h"
 
-void SPI_Init(void)
+void SPI_Init(void) // Initialize SPI in Master mode
 {
 	/* Set MOSI and SCK output, all others input */
 	DDRB |= (1<<PB5)|(1<<PB7)|(1<<PB4);
@@ -14,31 +14,25 @@ void SPI_write(char cData)
 {
 	/* Start transmission */
 	SPDR = cData;
-	//printf("SPI Write: %02X \n", SPDR);
-	//printf("SPI Write 2: %02X \n", cData);
 	/* Wait for transmission complete */
 	while(!(SPSR & (1<<SPIF)));
 }
 
 uint8_t SPI_read(void)
 {
-	/* Start transmission */
-	//SPDR = cData;
-	/* Wait for transmission complete */
-	SPI_write(0);
-	//while(!(SPSR & (1<<SPIF)));
-	//printf("SPI Read: %02X \n", SPDR);
+	SPI_write(0); // Reading SPI is same as writing it. You just have to wait for transmission to complete
 	return SPDR;
 }
 
-void SPI_SlaveInit(void)
+void SPI_SlaveInit(void) // Initializing function for SPI in Slave mode
 {
 	/* Set MISO output, all others input */
 	DDRB = (1<<DDB6);
 	/* Enable SPI */
 	SPCR = (1<<SPE);
 }
-char SPI_SlaveReceive(void)
+
+char SPI_SlaveReceive(void) // Receive function for SPI in Slave mode
 {
 	/* Wait for reception complete */
 	while(!(SPSR & (1<<SPIF)))

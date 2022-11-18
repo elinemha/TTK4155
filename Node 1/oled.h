@@ -20,17 +20,15 @@ void oled_goto_column(uint8_t column);
 void oled_pos(uint8_t page,uint8_t column);
 void oled_reset();
 void oled_clear_line(uint8_t page);
+
+// Writing single characters
 void writing4(char c);
 void writing5(char c);
 void writing8(char c);
+
+// Writing strings
 void writing_oled4(const char* data);
 void writing_oled5(const char* data);
 void writing_oled8(const char* data);
-
-/*
-oled_home();
-
-
-*/
 
 #endif
