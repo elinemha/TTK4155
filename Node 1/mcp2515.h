@@ -177,7 +177,7 @@ Copyright 2003 Kimberly Otten Software Consulting
 #define MCP_RXB0D0		0x66
 
 
-#define CAN_CS PB4
+#define CAN_CS PB4 // CAN Chip Select on PB4
 
 void mcp_init();
 uint8_t mcp2515_read(uint8_t address);

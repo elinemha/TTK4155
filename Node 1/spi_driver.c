@@ -7,7 +7,6 @@ void SPI_Init(void) // Initialize SPI in Master mode
 	DDRB &= ~(1<<PB1) & ~(1<<PB2) & ~(1<<PB3) & ~(1<<PB6);
 	/* Enable SPI, Master, set clock rate fck/16 */
 	SPCR = (1<<SPE)|(1<<MSTR)|(1<<SPR0);
-	//printf("SPCR: %02X \n", SPCR);
 	PORTB |= (1<<PB4);
 }
 void SPI_write(char cData)

@@ -31,15 +31,9 @@ int main()
 	joystick_init();
 	oled_init();
 	
-	DDRB &= ~(1<<PB1);
-	DDRB &= ~(1<<PB2);	
-
-	DDRD &= ~(1<<PD4);
 		
 	printf("Starting...\n");
-	
-	//ADC_read();
-	
+		
 	can_message board_positions_c;
 	volatile CONTROL_BOARD board_positions, board_positions2;
 	volatile JOYSTICK_DIR dir_j;
