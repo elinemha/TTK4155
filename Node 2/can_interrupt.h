@@ -1,7 +1,7 @@
 /*
  * can_interrupt.h
  *
- * Author: Gustav O. Often and Eivind H. Jølsgard
+ * Author: Gustav O. Often and Eivind H. JÃ¸lsgard
  *
  * For use in TTK4155 Embedded and Industrial Computer Systems Design
  * NTNU - Norwegian University of Science and Technology

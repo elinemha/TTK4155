@@ -1,10 +1,10 @@
-TTK4155
+# TTK4155
 
 Byggern H22
 Eline, Emma, Rohan
 
 
-Don't fuck it up next time!
+*Don't fuck it up next time!*
 
 Output of Op-Amp to AD7 on shield for reading IR light
 - Top on the left, orange wire, Vout
@@ -16,9 +16,9 @@ IR photodiode: Long leg to -
 
 Relay: Top right to AtSAM, top left to soloide
 
- Rightslider: PD2 
- - LeftSlider: PB4
- - TouchButtonRight: PD0
- - TouchButtonLeft: PB5
- - TouchButtonRight: PD0, pin 1
- - TouchButtonLeft: PB5, pin 6
+ Rightslider: ´´PD2´´ 
+ - LeftSlider: ´´PB4´´
+ - TouchButtonRight: ´´PD0´´
+ - TouchButtonLeft: ´´PB5´´
+ - TouchButtonRight: ´´PD0´´, pin 1
+ - TouchButtonLeft: ´´PB5´´, pin 6

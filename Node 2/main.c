@@ -16,12 +16,10 @@
 #include "controller.h"
 #include "sam3x8e.h"
 #include "solenoid.h"
-
+#include "motor.h"
+#include "delay_due.h"
 
 #define CAN_BR_1 0x00290165
-
-#define LED1 PIO_PA19
-#define LED2 PIO_PA20
 
 #define NOT_RST PIO_PD1
 
