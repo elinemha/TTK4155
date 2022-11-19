@@ -6,7 +6,7 @@ Eline, Emma, Rohan
 
 *Don't fuck it up next time!*
 
-Output of Op-Amp to ``AD7 on shield for reading IR light
+Output of Op-Amp to ``AD7`` on shield for reading IR light
 - Top on the left, orange wire, Vout
 
 On MJEX AO IS DA1
