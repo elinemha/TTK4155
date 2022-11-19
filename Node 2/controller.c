@@ -8,11 +8,11 @@
 #include "controller.h"
 #include <stdint.h>
 
-#define DIR PIO_PD10
-#define EN PIO_PD9
-#define SEL PIO_PD2
-#define NOT_OE PIO_PD0
-#define NOT_RST PIO_PD1
+#define DIR PIO_PD10				// PD10 = MJ1 DIR
+#define EN PIO_PD9					// PD9 = MJ1 EN
+#define SEL PIO_PD2					// PD2 = MJ1 SEL
+#define NOT_OE PIO_PD0				// PD0 = MJ1 !OE
+#define NOT_RST PIO_PD1				// PD1 = MJ1 !RST
 
 // D0-D7 ARE PC1-8
 #define MJ2_PORT 0x1FE
@@ -88,11 +88,11 @@ void set_direction(MOTOR_DIRECTION direction)
 {
 	if(direction == LEFT)
 	{
-		PIOD->PIO_CODR |= (DIR);
+		PIOD->PIO_CODR |= (DIR);										// LEFT direction = 0
 	}
 	else
 	{
-		PIOD->PIO_SODR |= DIR;
+		PIOD->PIO_SODR |= DIR;											// RIGHT direction = 1
 	}
 }
 
@@ -117,7 +117,7 @@ int16_t read_encoder()
 		enc_data = -((uint16_t)(~enc_data)+1);
 	}
 	
-	//limit encoder to go outside of range 0-255
+	//limit encoder to not go outside of range 0-255
 	enc_data = (int16_t) (((enc_data*255)/9000));
 	if (enc_data>0)
 	{
@@ -137,6 +137,7 @@ void set_speed(int16_t speed_joystick)
 	REG_DACC_CDR = speed_joystick;
 }
 
+//the encoder reset pin (MJ1 !RST) will reset the internal counter to 0 when pulled low.
 void reset_encoder(){
 	PIOD->PIO_CODR |= NOT_RST;
 	us_delay(100);
