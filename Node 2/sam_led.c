@@ -1,5 +1,5 @@
 /*
- * CFile1.c
+ * saml_led.c
  *
  * Created: 03.11.2022 16:07:16
  *  Author: elinemha
@@ -11,10 +11,10 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#define LED1 PIO_PA19
-#define LED2 PIO_PA20
+#define LED1 PIO_PA19 
+#define LED2 PIO_PA20 
 
-void sam_leds()
+void sam_leds()  //Led test code enabling the yellow and green leds on the shield
 {
  PIOA->PIO_PER |= (LED1 | LED2);
  PIOA->PIO_OER |= (LED1|LED2);
