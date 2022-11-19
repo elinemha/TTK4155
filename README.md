@@ -21,4 +21,4 @@ Relay: Top right to AtSAM, top left to soloide
  - TouchButtonRight: ``PD0``
  - TouchButtonLeft: ``PB5``
  - TouchButtonRight: ``PD0``, pin 1
- - TouchButtonLeft: ``PB5, pin 6
+ - TouchButtonLeft: ``PB5``, pin 6
