@@ -1,7 +1,10 @@
 /*
- * interrupt.c
+ * can_interrupt.c
  *
- * Author: 
+ * Author: Gustav O. Often and Eivind H. Jølsgard
+ *
+ * For use in TTK4155 Embedded and Industrial Computer Systems Design
+ * NTNU - Norwegian University of Science and Technology
  *
  */ 
 

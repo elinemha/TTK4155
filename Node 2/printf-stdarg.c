@@ -15,7 +15,7 @@
 */
 
 /*
-Edited 2020 by Eivind H. Jølsgard and Gustav O. Often for use in course TTK4155
+Edited 2020 by Eivind H. JÃ¸lsgard and Gustav O. Often for use in course TTK4155
 2020
 */
 
