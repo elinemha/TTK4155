@@ -3,8 +3,8 @@
 
 void SRAM_INIT(void)
 {
-	MCUCR |= (1<<SRE);
-	SFIOR |= (1<<XMM2);
+	MCUCR |= (1<<SRE); //Enable External SRAM in MCU Control Register
+	SFIOR |= (1<<XMM2); // Release PC7-PC4 by setting appropriate mask in Special Function IO Register
 }
 
 
