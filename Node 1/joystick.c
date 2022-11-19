@@ -11,8 +11,12 @@
 
 void joystick_init()
 {
+	// Initialize ports to read left and right buttons from multifunction board
+	
 	PORTB |= (1<<PB2);
 	DDRB |= (1<<DDB2);
+	DDRB &= ~(1<<PB1);
+	DDRB &= ~(1<<PB2);
 }
 
 CONTROL_BOARD read_board_positions()

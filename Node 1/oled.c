@@ -1,17 +1,18 @@
 #include "oled.h"
 #include "fonts.h"
 
+// using A[9] to indicate the command/data mode, since address is auto-incremented.
 
 void oled_write_command(uint8_t command)
 {
-    volatile char* address = (char*) 0x1000;
+    volatile char* address = (char*) 0x1000; // A[9]=0 for command mode
     address[0] = command;
 }
 
 
 void oled_write_data(uint8_t data)
 {
-    volatile char* address = (char*) 0x1200;  // using A[9] to indicate the command/data mode, since address is auto-incremented
+    volatile char* address = (char*) 0x1200;  // A[9]=1 for data mode
     address[0] = data;
 }
 

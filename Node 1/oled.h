@@ -9,7 +9,6 @@
 #include <util/delay.h>
 #include <avr/interrupt.h>
 #include "basic_defs.h"
-//#include "SSD1308.h"
 
 void oled_init();
 void oled_write_command(uint8_t command);

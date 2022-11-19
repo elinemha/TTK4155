@@ -23,6 +23,9 @@ void adc_config_clock() {
 
 void adc_init() {
 	adc_config_clock();
+	
+	DDRD &= ~(1<<PD4);
+
 }
 
 volatile uint8_t adc_read(uint8_t channel){
@@ -33,9 +36,9 @@ volatile uint8_t adc_read(uint8_t channel){
 	// wait for end of conversion
 	_delay_ms(9*NUMBER_OF_CHANNELS*2 / F_CPU);
 
-	// read desired channel
 	uint8_t data;
 
+	// read desired channel
 	for (int i = 0; i <= channel; ++i) {
 		data = ext_mem[0];
 	}
@@ -47,8 +50,7 @@ volatile uint8_t adc_read(uint8_t channel){
 uint8_t ADC_test(uint8_t channel)
 {
 	volatile char *ext_adc = (char *) 0x1400; // Start address for the SRAM
-	uint16_t ext_ram_size = 0x400;
-	//uint16_t write_errors = 0;
+	uint16_t ext_ram_size = 0x400; // SRAM size
 	printf("Starting ADC test...\n");
 	uint8_t offset_adc = 0x01;
 	uint8_t value = 0;
@@ -62,84 +64,13 @@ uint8_t ADC_test(uint8_t channel)
 		value = 1;
 	printf("Retrieval Value2: %02X \n", value);
 	return value;
-	// rand() stores some internal state, so calling this function in a loop will
-	// yield different seeds each time (unless srand() is called before this function)
-	/*uint16_t seed = rand();
-	// Write phase: Immediately check that the correct value was stored
-	srand(seed);
-		uint8_t some_value = rand();
-		uint8_t value = 129;
-		ext_ram = value;
-		_delay_us(30);
-		volatile uint8_t retreived_value;
-		//for (uint16_t i = 0; i < 4; i++) {
-			retreived_value = ext_ram[0];
-			printf("Retrieval Value: %02X \n", retreived_value);
-			
-			retreived_value = ext_ram[1];
-			printf("Retrieval Value: %02X \n", retreived_value);
-		//}
-	printf("Retrieval Value2: %02X \n", retreived_value);
-		//_delay_ms(200);*/
-
-	// Retrieval phase: Check that no values were changed during or after the write phase
-	
-	//printf("ADC test completed with \n%4d errors in write phase \n", write_errors);
 }
 
 void ADC_clock(void)
 {
-	TCCR0 |= (1<<WGM01)|(1<<COM00)|(1<<CS00);
-	DDRD |= (1<<DDD5);
-	OCR0 = 0x04;
+	TCCR0 |= (1<<WGM01)|(1<<COM00)|(1<<CS00); // Write to the Timer/Counter Control Register such that it's mode of operation is CTC
+	DDRD |= (1<<DDD5); // Set DDD5 as output pin
+	OCR0 = 0x04; // Assign Output Compare Register
 }
 
-uint8_t ADC_read()
-{
-	volatile char *ext_ram = (char *) 0x1400; // Start address for the SRAM
-	return ext_ram[0];
-}
-
-uint8_t ADC_tester(uint8_t channel)
-{
-	volatile char *ext_adc = (char *) 0x1400; // Start address for the SRAM
-	uint16_t ext_ram_size = 0x400;
-	//uint16_t write_errors = 0;
-	printf("Starting ADC test...\n");
-	uint8_t offset_adc = 0x01;
-	uint8_t value = 0;
-	uint8_t adc_mode = (1<<7)|(channel);
-	ext_adc[offset_adc] = adc_mode;
-	_delay_us(5000);
-	value = ext_adc[offset_adc];
-	if (value > 255)
-		value = 255;
-	else if (value <= 0)
-		value = 1;
-	printf("Retrieval Value2: %02X \n", value);
-	return value;
-	// rand() stores some internal state, so calling this function in a loop will
-	// yield different seeds each time (unless srand() is called before this function)
-	/*uint16_t seed = rand();
-	// Write phase: Immediately check that the correct value was stored
-	srand(seed);
-		uint8_t some_value = rand();
-		uint8_t value = 129;
-		ext_ram = value;
-		_delay_us(30);
-		volatile uint8_t retreived_value;
-		//for (uint16_t i = 0; i < 4; i++) {
-			retreived_value = ext_ram[0];
-			printf("Retrieval Value: %02X \n", retreived_value);
-			
-			retreived_value = ext_ram[1];
-			printf("Retrieval Value: %02X \n", retreived_value);
-		//}
-	printf("Retrieval Value2: %02X \n", retreived_value);
-		//_delay_ms(200);*/
-
-	// Retrieval phase: Check that no values were changed during or after the write phase
-	
-	//printf("ADC test completed with \n%4d errors in write phase \n", write_errors);
-}
 
