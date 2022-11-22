@@ -120,6 +120,75 @@ JOYSTICK_DIR input_joystick_dir(CONTROL_BOARD pos_j)
 	}
 }
 
+JOYSTICK_DIR input_joystick_dir2(CONTROL_BOARD pos_j)
+{
+	if (pos_j.x > 190)
+	{
+		if (pos_j.y > 190)
+		{
+			if(pos_j.y > pos_j.x + 10)
+			{
+				return UP;
+			}
+			else
+			{
+				return RIGHT;
+			}
+		}
+		else
+		{
+			if(pos_j.y < pos_j.x - 5)
+			{
+				return DOWN;
+			}
+			else
+			{
+				return RIGHT;
+			}
+		}
+	}
+	else if (pos_j.x < 150)
+	{
+		if (pos_j.y < 160)
+		{
+			if(pos_j.y > pos_j.x + 28)
+			{
+				return UP;
+			}
+			else
+			{
+				return LEFT;
+			}
+		}
+		else
+		{
+			if(pos_j.y < pos_j.x - 15)
+			{
+				return DOWN;
+			}
+			else
+			{
+				return LEFT;
+			}
+		}
+	}
+	else
+	{
+		if (pos_j.y > 190)
+		{
+			return UP;
+		}
+		else if (pos_j.y < 160)
+		{
+			return DOWN;
+		}
+		else
+		{
+			return NEUTRAL;
+		}
+	}
+}
+
 void print_positions(CONTROL_BOARD pos)
 {
 	printf("Joystick X Position: %4d\n ", pos.x);

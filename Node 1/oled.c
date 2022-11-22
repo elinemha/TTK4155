@@ -1,7 +1,6 @@
 #include "oled.h"
 #include "fonts.h"
 
-
 void oled_write_command(uint8_t command)
 {
     volatile char* address = (char*) 0x1000;

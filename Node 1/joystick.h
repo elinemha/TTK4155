@@ -30,6 +30,7 @@ void joystick_init();
 CONTROL_BOARD read_board_positions();
 CONTROL_BOARD calibrate_positions(CONTROL_BOARD pos_in);
 JOYSTICK_DIR input_joystick_dir(CONTROL_BOARD pos_j);
+JOYSTICK_DIR input_joystick_dir2(CONTROL_BOARD pos_j);
 void print_positions();
 void print_joystick_dir(JOYSTICK_DIR dir);
 int	left_button_press();

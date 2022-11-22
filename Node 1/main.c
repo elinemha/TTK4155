@@ -1,5 +1,5 @@
 /*
- * Byggern2.c
+ * Byggern2.c THIS IS IT
  *
  * Created: 01.09.2022 14:32:48
  * Author : emmal
@@ -43,8 +43,11 @@ int main()
 	can_message board_positions_c;
 	volatile CONTROL_BOARD board_positions, board_positions2;
 	volatile JOYSTICK_DIR dir_j;
-	int oled_position = 0;
+	int oled_position = 7;
 	uint8_t can_id = 0;
+
+	oled_reset();
+	
 	
 	while(1)
 	{	
@@ -62,14 +65,20 @@ int main()
 		//_delay_ms(200);
 		can_id += 1;
 		
-		board_positions2 = calibrate_positions(board_positions);
-		dir_j = input_joystick_dir(board_positions2);
+		//board_positions2 = calibrate_positions(board_positions);
+		print_positions(board_positions);
+		dir_j = input_joystick_dir2(board_positions);
+		print_joystick_dir(dir_j);
 		
 		if(dir_j == UP)
 		{
 			if(oled_position > 0)
 			{
 				oled_position -= 1;
+			}
+			else if(oled_position == 0)
+			{
+				oled_position = 7;
 			}
 		}
 		else if(dir_j == DOWN)
@@ -79,14 +88,18 @@ int main()
 				oled_position += 1;
 			}
 		}
+		printf("OLED> Position: %d \n", oled_position);
 		_delay_ms(100);
 		
 		
 		oled_reset();
 		
-		oled_pos(0x00, 0x00);
+		
+		oled_pos(0x05, 0x00);
+		//writing5('B');
 		char mystring[] = "OPTIONS  ";
 		writing_oled8(mystring);
+		
 		
 		oled_pos(0x01, 0x00);
 		char mystring1[] = "SETTINGS  ";
@@ -107,6 +120,7 @@ int main()
 		oled_pos(oled_position, 0x00);
 		char mystring5[] = "<<-----";
 		writing_oled4(mystring5);
+	
 	}	
 	
 return 0;
