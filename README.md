@@ -3,8 +3,7 @@
 Byggern H22
 Eline, Emma, Rohan
 
-
-*Don't fuck it up next time!*
+Some Important Notes for Circuit:
 
 Output of Op-Amp to ``AD7`` on shield for reading IR light
 - Top on the left, orange wire, Vout
